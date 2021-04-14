@@ -3,6 +3,7 @@ package com.myblog.intern.model;
 public class UserDetails {
     private Integer id;
     private Integer userId;
+    private String role;
     private String firstName;
     private String lastName;
     private String email;
@@ -19,9 +20,10 @@ public class UserDetails {
     public UserDetails() {
     }
 
-    public UserDetails(Integer id, Integer userId, String firstName, String lastName, String email, Integer birthDate, Integer birthMonth, Integer birthYear, String street, String state, String country, Integer zipCode, String contact, String profilePic) {
+    public UserDetails(Integer id, Integer userId, String role, String firstName, String lastName, String email, Integer birthDate, Integer birthMonth, Integer birthYear, String street, String state, String country, Integer zipCode, String contact, String profilePic) {
         this.id = id;
         this.userId = userId;
+        this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -50,6 +52,14 @@ public class UserDetails {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getFirstName() {
@@ -153,6 +163,7 @@ public class UserDetails {
         return "UserDetails{" +
                 "id=" + id +
                 ", userId=" + userId +
+                ", role='" + role + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

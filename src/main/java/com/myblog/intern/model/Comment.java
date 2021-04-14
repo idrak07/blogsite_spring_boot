@@ -2,27 +2,23 @@ package com.myblog.intern.model;
 
 import java.sql.Date;
 
-public class Post {
+public class Comment {
 
     private Integer id;
     private Integer userId;
-    private Integer selTopicId;
+    private Integer postId;
     private Date date;
     private String details;
-    private Integer active;
-    private String images;
 
-    public Post() {
+    public Comment() {
     }
 
-    public Post(Integer id, Integer userId, Integer selTopicId, Date date, String details, Integer active, String images) {
+    public Comment(Integer id, Integer userId, Integer postId, Date date, String details) {
         this.id = id;
         this.userId = userId;
-        this.selTopicId = selTopicId;
+        this.postId = postId;
         this.date = date;
         this.details = details;
-        this.active = active;
-        this.images = images;
     }
 
     public Integer getId() {
@@ -41,12 +37,12 @@ public class Post {
         this.userId = userId;
     }
 
-    public Integer getSelTopicId() {
-        return selTopicId;
+    public Integer getPostId() {
+        return postId;
     }
 
-    public void setSelTopicId(Integer selTopicId) {
-        this.selTopicId = selTopicId;
+    public void setPostId(Integer postId) {
+        this.postId = postId;
     }
 
     public Date getDate() {
@@ -65,32 +61,14 @@ public class Post {
         this.details = details;
     }
 
-    public Integer getActive() {
-        return active;
-    }
-
-    public void setActive(Integer active) {
-        this.active = active;
-    }
-
-    public String getImages() {
-        return images;
-    }
-
-    public void setImages(String images) {
-        this.images = images;
-    }
-
     @Override
     public String toString() {
-        return "Post{" +
+        return "Comment{" +
                 "id=" + id +
                 ", userId=" + userId +
-                ", selTopicId=" + selTopicId +
+                ", postId=" + postId +
                 ", date=" + date +
                 ", details='" + details + '\'' +
-                ", active=" + active +
-                ", images='" + images + '\'' +
                 '}';
     }
 }
