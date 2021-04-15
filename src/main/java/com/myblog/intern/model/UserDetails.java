@@ -1,8 +1,9 @@
 package com.myblog.intern.model;
 
-public class AdminDetails {
+public class UserDetails {
     private Integer id;
     private Integer userId;
+    private String role;
     private String firstName;
     private String lastName;
     private String email;
@@ -15,14 +16,14 @@ public class AdminDetails {
     private Integer zipCode;
     private String contact;
     private String profilePic;
-    private double salary;
 
-    public AdminDetails() {
+    public UserDetails() {
     }
 
-    public AdminDetails(Integer id, Integer userId, String firstName, String lastName, String email, Integer birthDate, Integer birthMonth, Integer birthYear, String street, String state, String country, Integer zipCode, String contact, String profilePic, double salary) {
+    public UserDetails(Integer id, Integer userId, String role, String firstName, String lastName, String email, Integer birthDate, Integer birthMonth, Integer birthYear, String street, String state, String country, Integer zipCode, String contact, String profilePic) {
         this.id = id;
         this.userId = userId;
+        this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -35,7 +36,6 @@ public class AdminDetails {
         this.zipCode = zipCode;
         this.contact = contact;
         this.profilePic = profilePic;
-        this.salary = salary;
     }
 
     public Integer getId() {
@@ -52,6 +52,14 @@ public class AdminDetails {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getFirstName() {
@@ -150,19 +158,12 @@ public class AdminDetails {
         this.profilePic = profilePic;
     }
 
-    public double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(double salary) {
-        this.salary = salary;
-    }
-
     @Override
     public String toString() {
-        return "AdminDetails{" +
+        return "UserDetails{" +
                 "id=" + id +
                 ", userId=" + userId +
+                ", role='" + role + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
@@ -175,7 +176,6 @@ public class AdminDetails {
                 ", zipCode=" + zipCode +
                 ", contact='" + contact + '\'' +
                 ", profilePic='" + profilePic + '\'' +
-                ", salary=" + salary +
                 '}';
     }
 }
