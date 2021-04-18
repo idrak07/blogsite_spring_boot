@@ -1,15 +1,23 @@
 package com.myblog.intern.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "selected_topic")
 public class SelectedTopic {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+    @Column(name = "topic_id")
     private Integer topicId;
+    @Column(name = "post_id")
     private Integer postId;
 
     public SelectedTopic() {
     }
 
-    public SelectedTopic(Integer id, Integer topicId, Integer postId) {
-        this.id = id;
+    public SelectedTopic( Integer topicId, Integer postId) {
         this.topicId = topicId;
         this.postId = postId;
     }

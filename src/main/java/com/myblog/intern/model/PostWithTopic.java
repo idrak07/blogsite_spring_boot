@@ -1,35 +1,29 @@
 package com.myblog.intern.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import java.sql.Date;
+import java.util.Arrays;
 
-@Entity
-@Table(name = "post")
-public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+public class PostWithTopic {
     private Integer id;
-    @Column(name = "user_id")
     private Integer userId;
-    @Column(name = "post_time")
     private Date date;
-    @Column(name = "details")
     private String details;
-    @Column(name = "active")
     private Integer active;
-    @Column(name = "images")
     private String images;
+    private Integer []topicList;
 
-    public Post() {
+    public PostWithTopic() {
     }
 
-    public Post(Integer userId, Date date, String details, Integer active, String images) {
+    public PostWithTopic(Integer id, Integer userId, Date date, String details, Integer active, String images, Integer[] topicList) {
+        this.id = id;
         this.userId = userId;
         this.date = date;
         this.details = details;
         this.active = active;
         this.images = images;
+        this.topicList = topicList;
     }
 
     public Integer getId() {
@@ -80,15 +74,24 @@ public class Post {
         this.images = images;
     }
 
+    public Integer[] getTopicList() {
+        return topicList;
+    }
+
+    public void setTopicList(Integer[] topicList) {
+        this.topicList = topicList;
+    }
+
     @Override
     public String toString() {
-        return "Post{" +
+        return "PostWithTopic{" +
                 "id=" + id +
                 ", userId=" + userId +
                 ", date=" + date +
                 ", details='" + details + '\'' +
                 ", active=" + active +
                 ", images='" + images + '\'' +
+                ", topicList=" + Arrays.toString(topicList) +
                 '}';
     }
 }
