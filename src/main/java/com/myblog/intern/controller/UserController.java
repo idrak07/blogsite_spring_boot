@@ -29,6 +29,7 @@ public class UserController {
         if(!userService.isValidEmailPattern(signupRequest.getEmail())) return "Invalid email!";
         if(userService.userNameExist(signupRequest.getUserName())) return "username is taken!";
         if(userService.emailExist(signupRequest.getEmail())) return "Email already exists!";
+        userService.addUser(signupRequest);
         return "Registration Successful!";
     }
     @GetMapping("/users")

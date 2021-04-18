@@ -3,7 +3,10 @@ package com.myblog.intern.service;
 import com.myblog.intern.model.LoginRequest;
 import com.myblog.intern.model.SignupRequest;
 import com.myblog.intern.model.User;
+import com.myblog.intern.model.UserDetails;
+import com.myblog.intern.repository.UserDetailsRepository;
 import com.myblog.intern.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +18,11 @@ import java.util.regex.Pattern;
 
 @Service
 public class UserService {
+    @Autowired
     UserRepository userRepository;
-    public UserService(UserRepository userRepository){
-        this.userRepository=userRepository;
-    }
+    @Autowired
+    UserDetailsRepository userDetailsRepository;
+
     public String Test(LoginRequest loginRequest){
         return loginRequest.getUsername();
     }
@@ -52,6 +56,9 @@ public class UserService {
         return BCrypt.hashpw(plainText, BCrypt.gensalt());
     }
     public void addUser(SignupRequest signupRequest){
-
+        User user=new User(signupRequest.getUserName(), hashPassword(signupRequest.getPassword()), signupRequest.getEmail(), true, "user");
+        userRepository.save(user);
+        UserDetails userDetails=new UserDetails(userRepository.findByUserName(signupRequest.getUserName()).getUserId(), "user", signupRequest.getFirstName(), signupRequest.getLastName(), signupRequest.getEmail());
+        userDetailsRepository.save(userDetails);
     }
 }
