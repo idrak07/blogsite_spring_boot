@@ -1,7 +1,14 @@
 package com.myblog.intern.model;
 
+import javax.persistence.*;
+
+@Entity
 public class Topic {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
     private String description;
 
     public Topic() {

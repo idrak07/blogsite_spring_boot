@@ -1,20 +1,54 @@
 package com.myblog.intern.model;
 
+import javax.persistence.*;
+
+@Entity
 public class UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "user_id")
     private Integer userId;
+
+    @Column(name = "role")
     private String role;
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "birth_date")
     private Integer birthDate;
+
+    @Column(name = "birth_month")
     private Integer birthMonth;
+
+    @Column(name = "birth_year")
     private Integer birthYear;
+
+    @Column(name = "street")
     private String street;
+
+    @Column(name = "state")
     private String state;
+
+    @Column(name = "country")
     private String country;
+
+    @Column(name = "zipCode")
     private Integer zipCode;
+
+    @Column(name = "contact")
     private String contact;
+
+    @Column(name = "profilePic")
     private String profilePic;
 
     public UserDetails() {
