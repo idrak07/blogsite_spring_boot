@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -34,5 +36,11 @@ public class UserService {
         List<User> userList=new ArrayList<>();
         userRepository.findAll().forEach(userList::add);
         return userList;
+    }
+    public boolean isValidEmailPattern(String email){
+        String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher= pattern.matcher(email);
+        return matcher.matches();
     }
 }

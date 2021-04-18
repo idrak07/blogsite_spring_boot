@@ -23,8 +23,10 @@ public class UserController {
     }
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequest signupRequest){
+        if(signupRequest.getPassword().length()<8) return "Password should contain at least 8 characters!";
+        if(!userService.isValidEmailPattern(signupRequest.getEmail())) return "Invalid email!";
         if(userService.userNameExist(signupRequest.getUserName())) return "username is taken!";
-        if(userService.emailExist(signupRequest.getEmail())) return "email already exists!";
+        if(userService.emailExist(signupRequest.getEmail())) return "Email already exists!";
         return "Registration Successful!";
     }
     @GetMapping("/users")
