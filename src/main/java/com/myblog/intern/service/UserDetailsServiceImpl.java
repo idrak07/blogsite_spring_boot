@@ -1,6 +1,6 @@
 package com.myblog.intern.service;
 
-import com.myblog.intern.model.User;
+/* import com.myblog.intern.model.User;
 import com.myblog.intern.model.UserDetailsImpl;
 import com.myblog.intern.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,4 +23,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         user.orElseThrow(()-> new UsernameNotFoundException("Not Found: "+username));
         return user.map(UserDetailsImpl::new).get();
     }
-}
+} */
