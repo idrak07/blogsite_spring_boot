@@ -1,8 +1,10 @@
 package com.myblog.intern.service;
 
 import com.myblog.intern.model.LoginRequest;
+import com.myblog.intern.model.SignupRequest;
 import com.myblog.intern.model.User;
 import com.myblog.intern.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,5 +44,14 @@ public class UserService {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher= pattern.matcher(email);
         return matcher.matches();
+    }
+    public String encodePassword(String plainText){
+        return BCrypt.hashpw(plainText, BCrypt.gensalt());
+    }
+    public static String hashPassword(String plainText){
+        return BCrypt.hashpw(plainText, BCrypt.gensalt());
+    }
+    public void addUser(SignupRequest signupRequest){
+
     }
 }
