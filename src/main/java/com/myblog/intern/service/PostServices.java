@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.Optional;
 
 @Service
 public class PostServices {
@@ -14,7 +15,7 @@ public class PostServices {
     PostRepository postRepository;
 
     public boolean createPost(Post post){
-        /*boolean flag=false;
+        boolean flag;
         try {
             postRepository.save(post);
             flag= true;
@@ -23,13 +24,15 @@ public class PostServices {
             flag=false;
             System.out.println(e.getMessage());
         }
-        return flag;*/
-        postRepository.save(post);
-        return true;
+        return flag;
+
 
     }
-    public Integer getPostid(Integer userId, Date date, String details){
+    public Integer getNewPostId(Integer userId, Date date, String details){
         return postRepository.findId(userId,date,details);
+    }
+    public Post getPostById(Integer id){
+        return postRepository.findPostById(id);
     }
 
 }

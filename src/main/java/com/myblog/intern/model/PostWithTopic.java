@@ -3,6 +3,7 @@ package com.myblog.intern.model;
 import javax.persistence.Column;
 import java.sql.Date;
 import java.util.Arrays;
+import java.util.List;
 
 public class PostWithTopic {
     private Integer id;
@@ -11,12 +12,10 @@ public class PostWithTopic {
     private String details;
     private Integer active;
     private String images;
-    private Integer []topicList;
+    private List<Integer>topicList;
 
-    public PostWithTopic() {
-    }
 
-    public PostWithTopic(Integer id, Integer userId, Date date, String details, Integer active, String images, Integer[] topicList) {
+    public PostWithTopic(Integer id, Integer userId, Date date, String details, Integer active, String images, List<Integer>topicList) {
         this.id = id;
         this.userId = userId;
         this.date = date;
@@ -74,11 +73,11 @@ public class PostWithTopic {
         this.images = images;
     }
 
-    public Integer[] getTopicList() {
+    public List<Integer>getTopicList() {
         return topicList;
     }
 
-    public void setTopicList(Integer[] topicList) {
+    public void setTopicList(List<Integer> topicList) {
         this.topicList = topicList;
     }
 
@@ -91,7 +90,7 @@ public class PostWithTopic {
                 ", details='" + details + '\'' +
                 ", active=" + active +
                 ", images='" + images + '\'' +
-                ", topicList=" + Arrays.toString(topicList) +
+                ", topicList=" + topicList +
                 '}';
     }
 }
