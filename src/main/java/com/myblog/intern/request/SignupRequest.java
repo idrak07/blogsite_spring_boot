@@ -1,4 +1,4 @@
-package com.myblog.intern.model;
+package com.myblog.intern.request;
 
 public class SignupRequest {
     private String firstName;

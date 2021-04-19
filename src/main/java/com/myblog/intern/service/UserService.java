@@ -1,7 +1,8 @@
 package com.myblog.intern.service;
 
-import com.myblog.intern.model.LoginRequest;
-import com.myblog.intern.model.SignupRequest;
+import com.myblog.intern.request.LoginRequest;
+import com.myblog.intern.request.PasswordChangeRequest;
+import com.myblog.intern.request.SignupRequest;
 import com.myblog.intern.model.User;
 import com.myblog.intern.model.UserDetails;
 import com.myblog.intern.repository.UserDetailsRepository;
@@ -49,16 +50,31 @@ public class UserService {
         Matcher matcher= pattern.matcher(email);
         return matcher.matches();
     }
-    public String encodePassword(String plainText){
+    public static String encodePassword(String plainText){
         return BCrypt.hashpw(plainText, BCrypt.gensalt());
     }
-    public static String hashPassword(String plainText){
-        return BCrypt.hashpw(plainText, BCrypt.gensalt());
-    }
+
     public void addUser(SignupRequest signupRequest){
-        User user=new User(signupRequest.getUserName(), hashPassword(signupRequest.getPassword()), signupRequest.getEmail(), true, "user");
+        User user=new User(signupRequest.getUserName(), encodePassword(signupRequest.getPassword()), signupRequest.getEmail(), true, "ROLE_user");
         userRepository.save(user);
-        UserDetails userDetails=new UserDetails(userRepository.findByUserName(signupRequest.getUserName()).getUserId(), "user", signupRequest.getFirstName(), signupRequest.getLastName(), signupRequest.getEmail());
+        UserDetails userDetails=new UserDetails(userRepository.findByUserName(signupRequest.getUserName()).getUserId(), "ROLE_user", signupRequest.getFirstName(), signupRequest.getLastName(), signupRequest.getEmail());
         userDetailsRepository.save(userDetails);
+    }
+    public User fetchByCredential(String credential){
+        User user=null;
+        user=userRepository.findByUserName(credential);
+        if(user==null) user= userRepository.findByEmail(credential);
+        return user;
+    }
+    public String updatePassword(Integer userId, PasswordChangeRequest passwordChangeRequest){
+        if(passwordChangeRequest.getNewPassword().length()<8) return "Password should contain at least 8 characters!";
+        if(passwordChangeRequest.getNewPassword().equals(passwordChangeRequest.getConfirmNewPassword())){
+            Optional<User> user=userRepository.findById(userId);
+            User myUser=user.get();
+            myUser.setPassword(encodePassword(passwordChangeRequest.getNewPassword()));
+            userRepository.save(myUser);
+            return "Password reset successful!";
+        }
+        return "Password did not match!";
     }
 }

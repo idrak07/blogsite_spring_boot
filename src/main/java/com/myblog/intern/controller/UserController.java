@@ -1,22 +1,30 @@
 package com.myblog.intern.controller;
 
-import com.myblog.intern.model.LoginRequest;
-import com.myblog.intern.model.SignupRequest;
+import com.myblog.intern.request.LoginRequest;
+import com.myblog.intern.request.PasswordChangeRequest;
+import com.myblog.intern.request.ResetPasswordRequest;
+import com.myblog.intern.request.SignupRequest;
 import com.myblog.intern.model.User;
 import com.myblog.intern.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.core.env.Environment;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.util.List;
 
 @RestController
 public class UserController {
     @Autowired
     UserService userService;
+    @Autowired
+    Environment environment;
     @RequestMapping("/hello")
     public String hello(){
-        return "hello";
+        return "redirect:users";
     }
+
     @PostMapping("/registration")
     public String login(@RequestBody LoginRequest loginRequest){
         return userService.Test(loginRequest);
@@ -35,5 +43,18 @@ public class UserController {
     @GetMapping("/users")
     public List<User> users(){
         return userService.fetchAllUsers();
+    }
+
+    @PostMapping("/reset-password")
+    public String forgetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) throws UnknownHostException {
+        User user= userService.fetchByCredential(resetPasswordRequest.getCredential());
+        if(user!=null){
+            return "Password Reset Link: "+Inet4Address.getLocalHost().getHostAddress()+":"+environment.getProperty("local.server.port")+"/reset-password/"+user.getUserId();
+        }
+        return "Invalid username or email!";
+    }
+    @PostMapping("/reset-password/{userId}")
+    public String resetPassword(@PathVariable int userId, @RequestBody PasswordChangeRequest passwordChangeRequest){
+        return userService.updatePassword(userId, passwordChangeRequest);
     }
 }
