@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
+/*This model is used to bind post and selected topic */
 public class PostWithTopic {
     private Integer id;
     private Integer userId;

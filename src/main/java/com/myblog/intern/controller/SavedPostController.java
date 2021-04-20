@@ -24,6 +24,11 @@ public class SavedPostController {
     public List<Post> getSavedPostByUser(@PathVariable Integer userId){
         List<Integer> postIds=savedPostService.getPostId(userId);
         return postServices.getPostsByIds(postIds);
+    }
 
+    @RequestMapping(value = "/{userId}/post/save/{postId}", method = RequestMethod.GET)
+    public List<Post> setSavedPostByUser(@PathVariable Integer userId){
+        List<Integer> postIds=savedPostService.getPostId(userId);
+        return postServices.getPostsByIds(postIds);
     }
 }

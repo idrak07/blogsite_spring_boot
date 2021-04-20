@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class PostController {
@@ -19,6 +18,14 @@ public class PostController {
     @Autowired
     SelectedTopicService selectedTopicService;
 
+    /*This method provide new post create option for user
+    * Url: localhost:8080/post/create
+    * Data :
+    * At first check you have a user with user id with value 1 in user table
+    * Check you have topic in topic table
+    * {"description": "Technology"}, {"description": "Agriculture"}
+    * {"userId":1,"date":"2021-04-19","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A","active":1,"images":",nsdvf","topicList": [1]}
+    * */
     @RequestMapping(value = "/post/create", method = RequestMethod.POST)
     public String createNewPost(@RequestBody PostWithTopic postWithTopic){
         Post post=new Post(postWithTopic.getUserId(),postWithTopic.getDate(),postWithTopic.getDetails(),postWithTopic.getActive(),postWithTopic.getImages());
@@ -34,7 +41,10 @@ public class PostController {
             return "Sorry! Problem found";
         }
     }
-
+    /*This method is used to get specific post
+    * Url: localhost:8080/post/12
+    * Data :Change value 12 for different result as it is post id
+    * */
     @RequestMapping(value = "/post/{postId}")
     public PostWithTopic getPost(@PathVariable Integer postId){
         PostWithTopic postWithTopic=null;
@@ -49,6 +59,8 @@ public class PostController {
       }
         return postWithTopic;
     }
+
+
 
 
 

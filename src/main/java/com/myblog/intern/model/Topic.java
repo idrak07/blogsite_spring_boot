@@ -1,7 +1,15 @@
 package com.myblog.intern.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "topic")
 public class Topic {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+    @Column(name = "description")
     private String description;
 
     public Topic() {
