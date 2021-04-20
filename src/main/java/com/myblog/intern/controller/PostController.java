@@ -80,5 +80,29 @@ public class PostController {
         return  result;
     }
 
+    /*This method is used for removing selected topic from a post
+    * Url: localhost:8080/post/13/remove/topic/5
+    * Change value 13 for postId and 5 for topicId
+    * */
+    @RequestMapping(value = "/post/add/topic", method = RequestMethod.POST)
+    public boolean addSelectedTopicToExistingPost(@RequestBody SelectedTopic selectedTopic){
+        boolean result=false;
+        try{
+            if (!selectedTopicService.selectedTopicExists(selectedTopic.getPostId(),selectedTopic.getTopicId())){
+                selectedTopicService.createNewSelectedTopic(selectedTopic);
+                result=true;
+            }
+            else {
+                System.out.println("Already topic is selected");
+            }
+
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        return  result;
+    }
+
 
 }

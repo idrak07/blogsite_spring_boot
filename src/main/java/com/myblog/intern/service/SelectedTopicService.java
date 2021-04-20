@@ -20,16 +20,26 @@ public class SelectedTopicService {
     }
 
     public List<Integer> getSelectedTopicByPostId(Integer postId){
-        List<Integer> selectedTopics= new ArrayList<>();
-        selectedTopicRepository.findTopicId(postId).forEach(selectedTopics::add);
-        return selectedTopics;
-    }
+        return selectedTopicRepository.findTopicId(postId);
 
+    }
+    public boolean selectedTopicExists(Integer postId, Integer topicId) {
+        boolean flag = false;
+        try {
+            if (selectedTopicRepository.findSelectedTopicByTopicIdAndPostId(topicId,postId).getId()!=null){
+                flag=true;
+            }
+        }
+        catch (Exception e){
+            System.out.println("Method - selectedTopicExists : "+e.getMessage());
+        }
+        return flag;
+    }
     public boolean delSelectedTopic(Integer postId, Integer topicId){
         boolean flag=false;
         SelectedTopic selectedTopic;
         try{
-            if (selectedTopicRepository.findSelectedTopicByTopicIdAndPostId(topicId,postId).getId()!=null){
+            if (selectedTopicExists(postId,topicId)){
                 selectedTopic= selectedTopicRepository.findSelectedTopicByTopicIdAndPostId(topicId,postId);
                 selectedTopicRepository.delete(selectedTopic);
                 flag=true;
