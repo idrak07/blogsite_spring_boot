@@ -31,10 +31,13 @@ public class TopicController {
     * User usage: when creating post
     * Url: localhost:8080/topic/all
     * */
-
     @RequestMapping(value = "/topic/all", method = RequestMethod.GET)
     public List<Topic> getAllTopic(){
         return  topicService.getTopicList();
     }
+
+
+
+
 
 }

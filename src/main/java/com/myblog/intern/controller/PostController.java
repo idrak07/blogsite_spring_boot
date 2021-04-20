@@ -18,6 +18,7 @@ public class PostController {
     @Autowired
     SelectedTopicService selectedTopicService;
 
+
     /*This method provide new post create option for user
     * Url: localhost:8080/post/create
     * Data :
@@ -60,8 +61,24 @@ public class PostController {
         return postWithTopic;
     }
 
+    /*This method is used for removing selected topic from a post
+    * Url: localhost:8080/post/13/remove/topic/5
+    * Change value 13 for postId and 5 for topicId
+    * */
+    @RequestMapping(value = "/post/{postId}/remove/topic/{topicId}")
+    public boolean removeSelectedTopic(@PathVariable Integer postId,@PathVariable Integer topicId){
+        boolean result=false;
+        try{
+            if (selectedTopicService.delSelectedTopic(postId,topicId)){
+                result=true;
+            }
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
-
+        return  result;
+    }
 
 
 }

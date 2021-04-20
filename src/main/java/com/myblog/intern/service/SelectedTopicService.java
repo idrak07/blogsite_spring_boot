@@ -25,4 +25,21 @@ public class SelectedTopicService {
         return selectedTopics;
     }
 
+    public boolean delSelectedTopic(Integer postId, Integer topicId){
+        boolean flag=false;
+        SelectedTopic selectedTopic;
+        try{
+            if (selectedTopicRepository.findSelectedTopicByTopicIdAndPostId(topicId,postId).getId()!=null){
+                selectedTopic= selectedTopicRepository.findSelectedTopicByTopicIdAndPostId(topicId,postId);
+                selectedTopicRepository.delete(selectedTopic);
+                flag=true;
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return flag;
+    }
+
 }
