@@ -37,6 +37,10 @@ public class UserDetails {
     private String contact;
     @Column(name="profile_pic")
     private String profilePic;
+    @Column(name="security_question")
+    private String securityQuestion;
+    @Column(name="security_answer")
+    private String securityAnswer;
 
     public UserDetails() {
     }

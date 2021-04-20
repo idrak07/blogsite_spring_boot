@@ -13,6 +13,7 @@ import org.springframework.core.env.Environment;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -47,9 +48,9 @@ public class UserController {
 
     @PostMapping("/reset-password")
     public String forgetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) throws UnknownHostException {
-        User user= userService.fetchByCredential(resetPasswordRequest.getCredential());
-        if(user!=null){
-            return "Password Reset Link: "+Inet4Address.getLocalHost().getHostAddress()+":"+environment.getProperty("local.server.port")+"/reset-password/"+user.getUserId();
+        Optional<User> user= userService.fetchByCredential(resetPasswordRequest.getCredential());
+        if(user.isPresent()){
+            return "Password Reset Link: "+Inet4Address.getLocalHost().getHostAddress()+":"+environment.getProperty("local.server.port")+"/reset-password/"+user.get().getUserId();
         }
         return "Invalid username or email!";
     }

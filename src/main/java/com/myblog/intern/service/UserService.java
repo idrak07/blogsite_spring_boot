@@ -28,15 +28,13 @@ public class UserService {
         return loginRequest.getUsername();
     }
     public boolean userNameExist(String username){
-        User user= null;
-        user= userRepository.findByUserName(username);
-        if(user==null) return false;
+        Optional<User> user= userRepository.findByUserName(username);
+        if(!user.isPresent()) return false;
         return true;
     }
     public boolean emailExist(String email){
-        User user= null;
-        user= userRepository.findByEmail(email);
-        if(user==null) return false;
+        Optional<User> user= userRepository.findByEmail(email);
+        if(!user.isPresent()) return false;
         return true;
     }
     public List<User> fetchAllUsers() {
@@ -57,13 +55,12 @@ public class UserService {
     public void addUser(SignupRequest signupRequest){
         User user=new User(signupRequest.getUserName(), encodePassword(signupRequest.getPassword()), signupRequest.getEmail(), true, "ROLE_user");
         userRepository.save(user);
-        UserDetails userDetails=new UserDetails(userRepository.findByUserName(signupRequest.getUserName()).getUserId(), "ROLE_user", signupRequest.getFirstName(), signupRequest.getLastName(), signupRequest.getEmail());
+        UserDetails userDetails=new UserDetails(userRepository.findByUserName(signupRequest.getUserName()).get().getUserId(), "ROLE_user", signupRequest.getFirstName(), signupRequest.getLastName(), signupRequest.getEmail());
         userDetailsRepository.save(userDetails);
     }
-    public User fetchByCredential(String credential){
-        User user=null;
-        user=userRepository.findByUserName(credential);
-        if(user==null) user= userRepository.findByEmail(credential);
+    public Optional<User> fetchByCredential(String credential){
+        Optional<User> user=userRepository.findByUserName(credential);
+        if(!user.isPresent()) user= userRepository.findByEmail(credential);
         return user;
     }
     public String updatePassword(Integer userId, PasswordChangeRequest passwordChangeRequest){

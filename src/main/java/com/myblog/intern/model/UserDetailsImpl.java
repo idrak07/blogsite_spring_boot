@@ -1,6 +1,6 @@
 package com.myblog.intern.model;
 
-/*import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -52,4 +52,4 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return user.isActive();
     }
-} */
+}
