@@ -82,4 +82,7 @@ public class UserService {
         }
         return "Password did not match!";
     }
+    public UserDetails getUserDetails(User user){
+        return userDetailsRepository.findByUserId(user.getUserId());
+    }
 }

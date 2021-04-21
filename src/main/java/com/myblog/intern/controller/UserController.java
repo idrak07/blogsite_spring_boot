@@ -1,10 +1,13 @@
 package com.myblog.intern.controller;
 
+import com.myblog.intern.mail.EmailFormat;
+import com.myblog.intern.model.UserDetails;
 import com.myblog.intern.request.LoginRequest;
 import com.myblog.intern.request.PasswordChangeRequest;
 import com.myblog.intern.request.ResetPasswordRequest;
 import com.myblog.intern.request.SignupRequest;
 import com.myblog.intern.model.User;
+import com.myblog.intern.service.EmailService;
 import com.myblog.intern.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,9 @@ public class UserController {
     UserService userService;
     @Autowired
     Environment environment;
+    @Autowired
+    EmailService emailService;
+
     @GetMapping("/hello")
     public void hello(HttpServletResponse response) throws IOException {
         response.sendRedirect("/users");
@@ -52,6 +58,7 @@ public class UserController {
     @PostMapping("/reset-password")
     public String forgetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) throws UnknownHostException {
         Optional<User> user= userService.fetchByCredential(resetPasswordRequest.getCredential());
+        System.out.println(emailService.sendMail(new EmailFormat(userService.getUserDetails(user.get()))));
         if(user.isPresent()){
             return "Password Reset Link: "+Inet4Address.getLocalHost().getHostAddress()+":"+environment.getProperty("local.server.port")+"/reset-password/"+user.get().getUserId();
         }
