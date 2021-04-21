@@ -48,12 +48,20 @@ public class UserService {
         Matcher matcher= pattern.matcher(email);
         return matcher.matches();
     }
+
+    public boolean isValidUserNamePattern(String userName){
+        String regex = "^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-z0-9._]+(?<![_.])$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher= pattern.matcher(userName);
+        return matcher.matches();
+    }
     public static String encodePassword(String plainText){
         return BCrypt.hashpw(plainText, BCrypt.gensalt());
     }
 
     public void addUser(SignupRequest signupRequest){
         User user=new User(signupRequest.getUserName(), encodePassword(signupRequest.getPassword()), signupRequest.getEmail(), true, "ROLE_user");
+        user.setActive(true);
         userRepository.save(user);
         UserDetails userDetails=new UserDetails(userRepository.findByUserName(signupRequest.getUserName()).get().getUserId(), "ROLE_user", signupRequest.getFirstName(), signupRequest.getLastName(), signupRequest.getEmail());
         userDetailsRepository.save(userDetails);

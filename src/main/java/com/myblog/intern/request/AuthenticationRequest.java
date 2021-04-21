@@ -3,20 +3,20 @@ package com.myblog.intern.request;
 import com.myblog.intern.response.AuthenticationResponse;
 
 public class AuthenticationRequest {
-    private String userName;
+    private String credential;
     private String password;
 
-    public AuthenticationRequest(String userName, String password){
-        this.userName=userName;
+    public AuthenticationRequest(String credential, String password){
+        this.credential=credential;
         this.password=password;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getCredential() {
+        return credential;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setCredential(String credential) {
+        this.credential = credential;
     }
 
     public String getPassword() {

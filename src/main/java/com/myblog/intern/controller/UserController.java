@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.core.env.Environment;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -21,9 +23,9 @@ public class UserController {
     UserService userService;
     @Autowired
     Environment environment;
-    @RequestMapping("/hello")
-    public String hello(){
-        return "redirect:users";
+    @GetMapping("/hello")
+    public void hello(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/users");
     }
 
     @PostMapping("/registration")
@@ -36,6 +38,7 @@ public class UserController {
         if(signupRequest.getFirstName().length()==0 || signupRequest.getLastName().length()==0) return "Name can not be empty!";
         if(signupRequest.getPassword().length()<8) return "Password should contain at least 8 characters!";
         if(!userService.isValidEmailPattern(signupRequest.getEmail())) return "Invalid email!";
+        if(!userService.isValidUserNamePattern(signupRequest.getUserName())) return "Invalid username!!";
         if(userService.userNameExist(signupRequest.getUserName())) return "username is taken!";
         if(userService.emailExist(signupRequest.getEmail())) return "Email already exists!";
         userService.addUser(signupRequest);
