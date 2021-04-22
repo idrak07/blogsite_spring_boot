@@ -9,4 +9,6 @@ import java.util.List;
 public interface SavedPostRepository extends JpaRepository<SavedPost,Integer> {
     @Query(value = "select post_id from saved_post where user_id=?1", nativeQuery = true)
     List<Integer> findPostIdsByUserId(Integer userId);
+
+    SavedPost findSavedPostByUserIdAndPostId(Integer userId, Integer postId);
 }

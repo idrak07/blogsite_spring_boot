@@ -27,8 +27,37 @@ public class SavedPostController {
     }
 
     @RequestMapping(value = "/{userId}/post/save/{postId}", method = RequestMethod.GET)
-    public List<Post> setSavedPostByUser(@PathVariable Integer userId){
-        List<Integer> postIds=savedPostService.getPostId(userId);
-        return postServices.getPostsByIds(postIds);
+    public boolean setSavedPostByUser(@PathVariable Integer userId, @PathVariable Integer postId){
+        boolean flag=false;
+        try {
+            if (!savedPostService.savedPostExists(userId, postId)){
+                if(savedPostService.savePost(new SavedPost(null, userId, postId))) {
+                    System.out.println("Post saved");
+                    flag = true;
+                }
+            }
+        }
+        catch (Exception e){
+            flag=false;
+            System.out.println(e.getMessage());
+        }
+        return flag;
+    }
+    @RequestMapping(value = "/{userId}/post/remove-save/{postId}", method = RequestMethod.GET)
+    public boolean removeSavedPostByUser(@PathVariable Integer userId,@PathVariable Integer postId){
+        boolean flag=false;
+        try {
+            if (savedPostService.savedPostExists(userId, postId)){
+                if(savedPostService.removeSavedPosts(userId, postId)) {
+                    System.out.println("Post removed");
+                    flag = true;
+                }
+            }
+        }
+        catch (Exception e){
+            flag=false;
+            System.out.println(e.getMessage());
+        }
+        return flag;
     }
 }
