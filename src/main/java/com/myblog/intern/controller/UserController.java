@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,9 +57,9 @@ public class UserController {
     }
 
     @PostMapping("/reset-password")
-    public String forgetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) throws UnknownHostException {
+    public String forgetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) throws UnknownHostException, ParseException {
         Optional<User> user= userService.fetchByCredential(resetPasswordRequest.getCredential());
-        System.out.println(emailService.sendMail(new EmailFormat(userService.getUserDetails(user.get()))));
+        System.out.println(emailService.sendMail(userService.getUserDetails(user.get())));
         if(user.isPresent()){
             return "Password Reset Link: "+Inet4Address.getLocalHost().getHostAddress()+":"+environment.getProperty("local.server.port")+"/reset-password/"+user.get().getUserId();
         }

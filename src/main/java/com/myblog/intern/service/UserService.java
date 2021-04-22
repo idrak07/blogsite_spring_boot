@@ -9,6 +9,7 @@ import com.myblog.intern.repository.UserDetailsRepository;
 import com.myblog.intern.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class UserService {
     UserRepository userRepository;
     @Autowired
     UserDetailsRepository userDetailsRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public String Test(LoginRequest loginRequest){
         return loginRequest.getUsername();
@@ -55,8 +58,9 @@ public class UserService {
         Matcher matcher= pattern.matcher(userName);
         return matcher.matches();
     }
-    public static String encodePassword(String plainText){
-        return BCrypt.hashpw(plainText, BCrypt.gensalt());
+    public String encodePassword(String plainText){
+        //return BCrypt.hashpw(plainText, BCrypt.gensalt());
+        return passwordEncoder.encode(plainText);
     }
 
     public void addUser(SignupRequest signupRequest){

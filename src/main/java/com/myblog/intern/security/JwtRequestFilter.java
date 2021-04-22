@@ -29,6 +29,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private HttpServletRequest req;
 
+    public String getToken(){
+        String authorizationHeader = req.getHeader("Authorization");
+        String token = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        }
+        return token;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
