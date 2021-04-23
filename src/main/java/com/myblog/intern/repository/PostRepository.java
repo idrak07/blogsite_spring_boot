@@ -12,5 +12,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "select id from POST where user_id=?1 and post_time=?2 and details=?3", nativeQuery = true)
     Integer findId(Integer userId, Date date, String details);
 
+    Post findPostByUserIdAndDateAndTitleAndDetails(Integer userId, Date date, String title, String details);
+
     Post findPostById(Integer id);
 }

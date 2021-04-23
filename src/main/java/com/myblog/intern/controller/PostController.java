@@ -3,8 +3,9 @@ package com.myblog.intern.controller;
 import com.myblog.intern.model.Post;
 import com.myblog.intern.model.PostWithTopic;
 import com.myblog.intern.model.SelectedTopic;
+import com.myblog.intern.service.PostSequenceService;
 import com.myblog.intern.service.SelectedTopicService;
-import com.myblog.intern.service.PostServices;
+import com.myblog.intern.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +15,11 @@ import java.util.List;
 public class PostController {
 
     @Autowired
-    PostServices postServices;
+    PostService postService;
     @Autowired
     SelectedTopicService selectedTopicService;
-
+    @Autowired
+    PostSequenceService postSequenceService;
 
     /*This method provide new post create option for user
     * Url: localhost:8080/post/create
@@ -25,22 +27,32 @@ public class PostController {
     * At first check you have a user with user id with value 1 in user table
     * Check you have topic in topic table
     * {"description": "Technology"}, {"description": "Agriculture"}
-    * {"userId":1,"date":"2021-04-19","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A","active":1,"images":",nsdvf","topicList": [1]}
+    * {"userId":1,"date":"2021-04-19","title": "My Post", "details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A","active":1,"images":",nsdvf","topicList": [1]}
     * */
     @RequestMapping(value = "/post/create", method = RequestMethod.POST)
     public String createNewPost(@RequestBody PostWithTopic postWithTopic){
-        Post post=new Post(postWithTopic.getUserId(),postWithTopic.getDate(),postWithTopic.getDetails(),postWithTopic.getActive(),postWithTopic.getImages());
-        if(postServices.createPost(post)){
-            Integer newId=postServices.getNewPostId(postWithTopic.getUserId(),postWithTopic.getDate(), postWithTopic.getDetails());
-            for(int i=0;i<postWithTopic.getTopicList().size();i++){
-                SelectedTopic selectedTopic=new SelectedTopic( postWithTopic.getTopicList().get(i),newId);
-                selectedTopicService.createNewSelectedTopic(selectedTopic);
+        String result=null;
+        Integer id=postSequenceService.getNextVal();
+        try{
+            Post post=new Post(id,postWithTopic.getUserId(),postWithTopic.getDate(),postWithTopic.getTitle(),postWithTopic.getDetails(),postWithTopic.getActive(),postWithTopic.getImages());
+
+            if(postService.createPost(post)){
+                /*Integer newId=postService.getNewPostId(postWithTopic.getUserId(),postWithTopic.getDate(),postWithTopic.getTitle(), postWithTopic.getDetails()).getId();*/
+                for(int i=0;i<postWithTopic.getTopicList().size();i++){
+                    SelectedTopic selectedTopic=new SelectedTopic( postWithTopic.getTopicList().get(i),id);
+                    selectedTopicService.createNewSelectedTopic(selectedTopic);
+                }
+               result= "New post created";
             }
-            return "New post created";
+            else{
+                result= "Sorry! Problem found";
+            }
+            
         }
-        else{
-            return "Sorry! Problem found";
+        catch (Exception e){
+            System.out.println("Controller: PostController , Method: CreatePost, Error: "+e.getMessage());
         }
+        return result;
     }
     /*This method is used to get specific post
     * Url: localhost:8080/post/12
@@ -50,9 +62,9 @@ public class PostController {
     public PostWithTopic getPost(@PathVariable Integer postId){
         PostWithTopic postWithTopic=null;
       try{
-          Post post= postServices.getPostById(postId);
+          Post post= postService.getPostById(postId);
           List<Integer> selectedTopic= selectedTopicService.getSelectedTopicByPostId(postId);
-          postWithTopic=new PostWithTopic(post.getId(),post.getUserId(),post.getDate(),post.getDetails(),post.getActive(),post.getImages(),selectedTopic);
+          postWithTopic=new PostWithTopic(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getDetails(),post.getActive(),post.getImages(),selectedTopic);
 
       }
       catch (Exception e){

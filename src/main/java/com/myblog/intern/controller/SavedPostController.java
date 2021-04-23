@@ -2,7 +2,7 @@ package com.myblog.intern.controller;
 
 import com.myblog.intern.model.Post;
 import com.myblog.intern.model.SavedPost;
-import com.myblog.intern.service.PostServices;
+import com.myblog.intern.service.PostService;
 import com.myblog.intern.service.SavedPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +18,12 @@ public class SavedPostController {
     @Autowired
     SavedPostService savedPostService;
     @Autowired
-    PostServices postServices;
+    PostService postService;
 
     @RequestMapping(value = "/{userId}/post/saved", method = RequestMethod.GET)
     public List<Post> getSavedPostByUser(@PathVariable Integer userId){
         List<Integer> postIds=savedPostService.getPostId(userId);
-        return postServices.getPostsByIds(postIds);
+        return postService.getPostsByIds(postIds);
     }
 
     @RequestMapping(value = "/{userId}/post/save/{postId}", method = RequestMethod.GET)

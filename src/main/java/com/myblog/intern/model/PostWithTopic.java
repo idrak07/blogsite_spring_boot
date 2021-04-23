@@ -10,16 +10,21 @@ public class PostWithTopic {
     private Integer id;
     private Integer userId;
     private Date date;
+    private String title;
     private String details;
     private Integer active;
     private String images;
     private List<Integer>topicList;
 
 
-    public PostWithTopic(Integer id, Integer userId, Date date, String details, Integer active, String images, List<Integer>topicList) {
+    public PostWithTopic() {
+    }
+
+    public PostWithTopic(Integer id, Integer userId, Date date, String title, String details, Integer active, String images, List<Integer> topicList) {
         this.id = id;
         this.userId = userId;
         this.date = date;
+        this.title = title;
         this.details = details;
         this.active = active;
         this.images = images;
@@ -50,6 +55,14 @@ public class PostWithTopic {
         this.date = date;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDetails() {
         return details;
     }
@@ -74,7 +87,7 @@ public class PostWithTopic {
         this.images = images;
     }
 
-    public List<Integer>getTopicList() {
+    public List<Integer> getTopicList() {
         return topicList;
     }
 
@@ -88,6 +101,7 @@ public class PostWithTopic {
                 "id=" + id +
                 ", userId=" + userId +
                 ", date=" + date +
+                ", title='" + title + '\'' +
                 ", details='" + details + '\'' +
                 ", active=" + active +
                 ", images='" + images + '\'' +
