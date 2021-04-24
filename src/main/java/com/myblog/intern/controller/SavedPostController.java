@@ -40,32 +40,42 @@ public class SavedPostController {
         return posts;
     }
 
-    @RequestMapping(value = "/{userId}/post/save/{postId}", method = RequestMethod.GET)
-    public boolean setSavedPostByUser(@PathVariable Integer userId, @PathVariable Integer postId){
+    @RequestMapping(value = "/{username}/post/save/{postId}", method = RequestMethod.GET)
+    public boolean setSavedPostByUser(@PathVariable String username, @PathVariable Integer postId){
         boolean flag=false;
+        Integer userId;
         try {
-            if (!savedPostService.savedPostExists(userId, postId)){
-                if(savedPostService.savePost(new SavedPost(null, userId, postId))) {
-                    System.out.println("Post saved");
-                    flag = true;
+            userId=userService.getUserIdByUserName(username);
+            if (userId!=(-1)){
+                if (!savedPostService.savedPostExists(userId, postId)){
+                    if(savedPostService.savePost(new SavedPost(null, userId, postId))) {
+                        System.out.println("Post saved");
+                        flag = true;
+                    }
                 }
             }
+
         }
         catch (Exception e){
             System.out.println(e.getMessage());
         }
         return flag;
     }
-    @RequestMapping(value = "/{userId}/post/remove-save/{postId}", method = RequestMethod.GET)
-    public boolean removeSavedPostByUser(@PathVariable Integer userId,@PathVariable Integer postId){
+    @RequestMapping(value = "/{username}/post/remove-save/{postId}", method = RequestMethod.GET)
+    public boolean removeSavedPostByUser(@PathVariable String username,@PathVariable Integer postId){
         boolean flag=false;
+        Integer userId;
         try {
-            if (savedPostService.savedPostExists(userId, postId)){
-                if(savedPostService.removeSavedPosts(userId, postId)) {
-                    System.out.println("Post removed");
-                    flag = true;
+            userId=userService.getUserIdByUserName(username);
+            if (userId!=(-1)){
+                if (savedPostService.savedPostExists(userId, postId)){
+                    if(savedPostService.removeSavedPosts(userId, postId)) {
+                        System.out.println("Post removed");
+                        flag = true;
+                    }
                 }
             }
+
         }
         catch (Exception e){
             System.out.println(e.getMessage());
