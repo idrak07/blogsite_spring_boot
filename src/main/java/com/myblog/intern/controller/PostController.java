@@ -44,7 +44,7 @@ public class PostController {
         try{
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
             Timestamp date = new Timestamp(System.currentTimeMillis());
-            Post post=new Post(id,postWithTopic.getUserId(),date,postWithTopic.getTitle(),postWithTopic.getShortDescription(),postWithTopic.getDetails(),postWithTopic.getActive(),date,0);
+            Post post=new Post(id,postWithTopic.getUserId(),date,postWithTopic.getTitle(),postWithTopic.getShortDescription(),postWithTopic.getDetails(),postWithTopic.getActive(),date,0,0,0);
 
             if(postService.createPost(post)){
                 for(int i=0;i<postWithTopic.getTopicList().size();i++){
@@ -95,7 +95,7 @@ public class PostController {
       try{
           Post post= postService.getPostById(postId);
           List<Integer> selectedTopic= selectedTopicService.getSelectedTopicByPostId(postId);
-          postWithTopic=new PostWithTopic(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getActive(),post.getUpdatedAt(),post.getView(),selectedTopic);
+          postWithTopic=new PostWithTopic(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getActive(),post.getUpdatedAt(),post.getView(),post.getLikes(),post.getComments(),selectedTopic);
 
       }
       catch (Exception e){

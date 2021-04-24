@@ -17,13 +17,15 @@ public class PostWithTopic {
     private Integer active;
     private Timestamp updatedAt;
     private Integer view;
+    private Integer likes;
+    private Integer comments;
     private List<Integer>topicList;
 
 
     public PostWithTopic() {
     }
 
-    public PostWithTopic(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view, List<Integer> topicList) {
+    public PostWithTopic(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view, Integer likes, Integer comments, List<Integer> topicList) {
         this.id = id;
         this.userId = userId;
         this.date = date;
@@ -33,6 +35,8 @@ public class PostWithTopic {
         this.active = active;
         this.updatedAt = updatedAt;
         this.view = view;
+        this.likes = likes;
+        this.comments = comments;
         this.topicList = topicList;
     }
 
@@ -108,6 +112,22 @@ public class PostWithTopic {
         this.view = view;
     }
 
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public Integer getComments() {
+        return comments;
+    }
+
+    public void setComments(Integer comments) {
+        this.comments = comments;
+    }
+
     public List<Integer> getTopicList() {
         return topicList;
     }
@@ -128,6 +148,8 @@ public class PostWithTopic {
                 ", active=" + active +
                 ", updatedAt=" + updatedAt +
                 ", view=" + view +
+                ", likes=" + likes +
+                ", comments=" + comments +
                 ", topicList=" + topicList +
                 '}';
     }

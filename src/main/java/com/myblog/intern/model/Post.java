@@ -38,11 +38,15 @@ public class Post {
     private Timestamp updatedAt;
     @Column(name = "view")
     private Integer view;
+    @Column(name = "likes")
+    private Integer likes;
+    @Column(name = "comments")
+    private Integer comments;
 
     public Post() {
     }
 
-    public Post(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view) {
+    public Post(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view, Integer likes, Integer comments) {
         this.id = id;
         this.userId = userId;
         this.date = date;
@@ -52,6 +56,8 @@ public class Post {
         this.active = active;
         this.updatedAt = updatedAt;
         this.view = view;
+        this.likes = likes;
+        this.comments = comments;
     }
 
     public Integer getId() {
@@ -126,6 +132,22 @@ public class Post {
         this.view = view;
     }
 
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public Integer getComments() {
+        return comments;
+    }
+
+    public void setComments(Integer comments) {
+        this.comments = comments;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -138,6 +160,8 @@ public class Post {
                 ", active=" + active +
                 ", updatedAt=" + updatedAt +
                 ", view=" + view +
+                ", likes=" + likes +
+                ", comments=" + comments +
                 '}';
     }
 }
