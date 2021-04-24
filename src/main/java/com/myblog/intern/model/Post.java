@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "post")
@@ -24,7 +25,7 @@ public class Post {
     @Column(name = "user_id")
     private Integer userId;
     @Column(name = "post_time")
-    private Date date;
+    private Timestamp date;
     @Column(name = "title")
     private String title;
     @Column(name = "details")
@@ -37,7 +38,7 @@ public class Post {
     public Post() {
     }
 
-    public Post(Integer id, Integer userId, Date date, String title, String details, Integer active, String images) {
+    public Post(Integer id, Integer userId, Timestamp date, String title, String details, Integer active, String images) {
         this.id = id;
         this.userId = userId;
         this.date = date;
@@ -63,11 +64,11 @@ public class Post {
         this.userId = userId;
     }
 
-    public Date getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 

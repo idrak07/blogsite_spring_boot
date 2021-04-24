@@ -9,6 +9,9 @@ import com.myblog.intern.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
@@ -34,7 +37,9 @@ public class PostController {
         String result=null;
         Integer id=postSequenceService.getNextVal();
         try{
-            Post post=new Post(id,postWithTopic.getUserId(),postWithTopic.getDate(),postWithTopic.getTitle(),postWithTopic.getDetails(),postWithTopic.getActive(),postWithTopic.getImages());
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            Timestamp date = new Timestamp(System.currentTimeMillis());
+            Post post=new Post(id,postWithTopic.getUserId(),date,postWithTopic.getTitle(),postWithTopic.getDetails(),postWithTopic.getActive(),postWithTopic.getImages());
 
             if(postService.createPost(post)){
                 /*Integer newId=postService.getNewPostId(postWithTopic.getUserId(),postWithTopic.getDate(),postWithTopic.getTitle(), postWithTopic.getDetails()).getId();*/
