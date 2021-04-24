@@ -4,6 +4,7 @@ import com.myblog.intern.model.Post;
 import com.myblog.intern.model.PostWithTopic;
 import com.myblog.intern.model.SelectedTopic;
 import com.myblog.intern.service.PostSequenceService;
+import com.myblog.intern.service.PostWithTopicService;
 import com.myblog.intern.service.SelectedTopicService;
 import com.myblog.intern.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,6 +25,9 @@ public class PostController {
     SelectedTopicService selectedTopicService;
     @Autowired
     PostSequenceService postSequenceService;
+
+    @Autowired
+    PostWithTopicService postWithTopicService;
 
     /*This method provide new post create option for user
     * Url: localhost:8080/post/create
@@ -61,7 +66,21 @@ public class PostController {
 
 
 
-    /**/
+    /*Recent Post list*/
+    @RequestMapping(value = "/posts/categories/recent")
+    public List<PostWithTopic> getRecentPostList(){
+        List<Post> posts;
+        List<PostWithTopic> postWithTopics=new ArrayList<>();
+        try {
+            posts=postService.getRecentPosts();
+            postWithTopics=postWithTopicService.getPostsWithTopic(posts);
+        }
+        catch (Exception e){
+            System.out.println("Controller: PostController, Method: getRecentPostList, Error: "+e.getMessage());
+        }
+        return  postWithTopics;
+
+    }
 
 
 
@@ -127,6 +146,8 @@ public class PostController {
 
         return  result;
     }
+
+
 
 
 

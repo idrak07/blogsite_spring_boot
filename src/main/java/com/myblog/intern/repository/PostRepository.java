@@ -6,13 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    @Query(value = "select id from POST where user_id=?1 and post_time=?2 and details=?3", nativeQuery = true)
-    Integer findId(Integer userId, Date date, String details);
 
-    Post findPostByUserIdAndDateAndTitleAndDetails(Integer userId, Date date, String title, String details);
+    Post findPostByUserIdAndDateAndTitleAndDetails(Integer userId, Timestamp date, String title, String details);
 
     Post findPostById(Integer id);
+
+    List<Post> findAllByActiveOrderByDateDesc(Integer active);
+
+
 }

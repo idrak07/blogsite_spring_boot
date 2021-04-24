@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -28,7 +29,7 @@ public class PostService {
 
 
     }
-    public Post getNewPostId(Integer userId, Date date, String title, String details){
+    public Post getNewPostId(Integer userId, Timestamp date, String title, String details){
         Post post=null;
         try {
             post= postRepository.findPostByUserIdAndDateAndTitleAndDetails(userId, date, title, details);
@@ -57,6 +58,17 @@ public class PostService {
         }
         catch (Exception e){
             System.out.println("Service: PostService, Method: getPostsByIds, Error: "+e.getMessage());
+        }
+        return posts;
+    }
+
+    public List<Post> getRecentPosts(){
+        List<Post> posts = null;
+        try {
+            posts=postRepository.findAllByActiveOrderByDateDesc(1);
+        }
+        catch (Exception e){
+            System.out.println("Service: PostService, Method: getRecentPosts, Error: "+e.getMessage());
         }
         return posts;
     }
