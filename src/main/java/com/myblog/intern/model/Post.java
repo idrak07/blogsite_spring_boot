@@ -28,24 +28,30 @@ public class Post {
     private Timestamp date;
     @Column(name = "title")
     private String title;
+    @Column(name = "short_description")
+    private String shortDescription;
     @Column(name = "details")
     private String details;
     @Column(name = "active")
     private Integer active;
-    @Column(name = "images")
-    private String images;
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
+    @Column(name = "view")
+    private Integer view;
 
     public Post() {
     }
 
-    public Post(Integer id, Integer userId, Timestamp date, String title, String details, Integer active, String images) {
+    public Post(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view) {
         this.id = id;
         this.userId = userId;
         this.date = date;
         this.title = title;
+        this.shortDescription = shortDescription;
         this.details = details;
         this.active = active;
-        this.images = images;
+        this.updatedAt = updatedAt;
+        this.view = view;
     }
 
     public Integer getId() {
@@ -80,6 +86,14 @@ public class Post {
         this.title = title;
     }
 
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
     public String getDetails() {
         return details;
     }
@@ -96,12 +110,20 @@ public class Post {
         this.active = active;
     }
 
-    public String getImages() {
-        return images;
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setImages(String images) {
-        this.images = images;
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Integer getView() {
+        return view;
+    }
+
+    public void setView(Integer view) {
+        this.view = view;
     }
 
     @Override
@@ -111,9 +133,11 @@ public class Post {
                 ", userId=" + userId +
                 ", date=" + date +
                 ", title='" + title + '\'' +
+                ", shortDescription='" + shortDescription + '\'' +
                 ", details='" + details + '\'' +
                 ", active=" + active +
-                ", images='" + images + '\'' +
+                ", updatedAt=" + updatedAt +
+                ", view=" + view +
                 '}';
     }
 }

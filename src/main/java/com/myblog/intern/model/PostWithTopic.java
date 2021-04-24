@@ -12,23 +12,27 @@ public class PostWithTopic {
     private Integer userId;
     private Timestamp date;
     private String title;
+    private String shortDescription;
     private String details;
     private Integer active;
-    private String images;
+    private Timestamp updatedAt;
+    private Integer view;
     private List<Integer>topicList;
 
 
     public PostWithTopic() {
     }
 
-    public PostWithTopic(Integer id, Integer userId, Timestamp date, String title, String details, Integer active, String images, List<Integer> topicList) {
+    public PostWithTopic(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view, List<Integer> topicList) {
         this.id = id;
         this.userId = userId;
         this.date = date;
         this.title = title;
+        this.shortDescription = shortDescription;
         this.details = details;
         this.active = active;
-        this.images = images;
+        this.updatedAt = updatedAt;
+        this.view = view;
         this.topicList = topicList;
     }
 
@@ -64,6 +68,14 @@ public class PostWithTopic {
         this.title = title;
     }
 
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
     public String getDetails() {
         return details;
     }
@@ -80,12 +92,20 @@ public class PostWithTopic {
         this.active = active;
     }
 
-    public String getImages() {
-        return images;
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setImages(String images) {
-        this.images = images;
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Integer getView() {
+        return view;
+    }
+
+    public void setView(Integer view) {
+        this.view = view;
     }
 
     public List<Integer> getTopicList() {
@@ -103,9 +123,11 @@ public class PostWithTopic {
                 ", userId=" + userId +
                 ", date=" + date +
                 ", title='" + title + '\'' +
+                ", shortDescription='" + shortDescription + '\'' +
                 ", details='" + details + '\'' +
                 ", active=" + active +
-                ", images='" + images + '\'' +
+                ", updatedAt=" + updatedAt +
+                ", view=" + view +
                 ", topicList=" + topicList +
                 '}';
     }

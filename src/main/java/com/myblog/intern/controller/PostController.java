@@ -30,8 +30,8 @@ public class PostController {
     * At first check you have a user with user id with value 1 in user table
     * Check you have topic in topic table
     * {"description": "Technology"}, {"description": "Agriculture"}
-    * {"userId":1,"date":"2021-04-19","title": "My Post", "details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A","active":1,"images":",nsdvf","topicList": [1]}
-    * */
+    * {"userId":1,"title":"My third post","shortDescription": "This is short desc","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A","active":1,"images":",nsdvf","topicList": [1,4]}
+     * */
     @RequestMapping(value = "/post/create", method = RequestMethod.POST)
     public String createNewPost(@RequestBody PostWithTopic postWithTopic){
         String result=null;
@@ -39,10 +39,9 @@ public class PostController {
         try{
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
             Timestamp date = new Timestamp(System.currentTimeMillis());
-            Post post=new Post(id,postWithTopic.getUserId(),date,postWithTopic.getTitle(),postWithTopic.getDetails(),postWithTopic.getActive(),postWithTopic.getImages());
+            Post post=new Post(id,postWithTopic.getUserId(),date,postWithTopic.getTitle(),postWithTopic.getShortDescription(),postWithTopic.getDetails(),postWithTopic.getActive(),date,0);
 
             if(postService.createPost(post)){
-                /*Integer newId=postService.getNewPostId(postWithTopic.getUserId(),postWithTopic.getDate(),postWithTopic.getTitle(), postWithTopic.getDetails()).getId();*/
                 for(int i=0;i<postWithTopic.getTopicList().size();i++){
                     SelectedTopic selectedTopic=new SelectedTopic( postWithTopic.getTopicList().get(i),id);
                     selectedTopicService.createNewSelectedTopic(selectedTopic);
@@ -59,6 +58,14 @@ public class PostController {
         }
         return result;
     }
+
+
+
+    /**/
+
+
+
+
     /*This method is used to get specific post
     * Url: localhost:8080/post/12
     * Data :Change value 12 for different result as it is post id
@@ -69,7 +76,7 @@ public class PostController {
       try{
           Post post= postService.getPostById(postId);
           List<Integer> selectedTopic= selectedTopicService.getSelectedTopicByPostId(postId);
-          postWithTopic=new PostWithTopic(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getDetails(),post.getActive(),post.getImages(),selectedTopic);
+          postWithTopic=new PostWithTopic(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getActive(),post.getUpdatedAt(),post.getView(),selectedTopic);
 
       }
       catch (Exception e){
@@ -120,6 +127,8 @@ public class PostController {
 
         return  result;
     }
+
+
 
 
 }
