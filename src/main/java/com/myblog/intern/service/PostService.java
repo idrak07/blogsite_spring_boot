@@ -45,6 +45,8 @@ public class PostService {
         Post post=null;
         try {
             post= postRepository.findPostById(id);
+            post.setView(post.getView()+1);
+            postRepository.save(post);
         }
         catch (Exception e){
             System.out.println("Service: PostService, Method: getPostById, Error: "+e.getMessage());
@@ -72,5 +74,6 @@ public class PostService {
         }
         return posts;
     }
+
 
 }
