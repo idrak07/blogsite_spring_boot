@@ -9,8 +9,6 @@ import com.myblog.intern.service.SelectedTopicService;
 import com.myblog.intern.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,8 +63,39 @@ public class PostController {
     }
 
 
+    /*This method provide new post create option for user
+     * Url: localhost:8080/post/{postId}/update
+     * Data :
+     * At first check you have a user with user id with value 1 in user table
+     * Check you have topic in topic table
+     * {"description": "Technology"}, {"description": "Agriculture"}
+     * {"title":"My third post","shortDescription": "This is short desc","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A"}
+     * */
+    @RequestMapping(value = "/post/{postId}/update", method = RequestMethod.POST)
+    public boolean updatePost(@PathVariable Integer postId, @RequestBody Post post){
+        boolean flag=false;
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+        try {
+            if (postService.postExists(postId)){
+                if (postService.updatePost(postId,post.getTitle(),post.getShortDescription(),post.getDetails(),updateTime)){
+                    flag=true;
+                }
+            }
+        }
+        catch (Exception e){
+            System.out.println("Controller: PostController , Method: updatePost, Error: "+e.getMessage());
+        }
+        return flag;
+    }
 
-    /*Recent Post list*/
+
+
+    /*Recent Post list
+    * Url: localhost:8080/posts/categories/recent
+    * Method:get
+    * Data: no data required
+    * */
     @RequestMapping(value = "/posts/categories/recent")
     public List<PostWithTopic> getRecentPostList(){
         List<Post> posts;

@@ -18,5 +18,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     List<Post> findAllByActiveOrderByDateDesc(Integer active);
 
+    boolean existsPostByIdAndActive(Integer postId, Integer active);
+
 
 }

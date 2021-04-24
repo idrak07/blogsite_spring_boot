@@ -1,6 +1,8 @@
 package com.myblog.intern.service;
 
 import com.myblog.intern.model.Post;
+import com.myblog.intern.model.PostHistory;
+import com.myblog.intern.repository.PostHistoryRepository;
 import com.myblog.intern.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ public class PostService {
 
     @Autowired
     PostRepository postRepository;
+    @Autowired
+    PostHistoryRepository postHistoryRepository;
 
     public boolean createPost(Post post){
         boolean flag;
@@ -73,6 +77,37 @@ public class PostService {
             System.out.println("Service: PostService, Method: getRecentPosts, Error: "+e.getMessage());
         }
         return posts;
+    }
+
+    public boolean postExists(Integer postId){
+        boolean flag= false;
+        try{
+            if (postRepository.existsPostByIdAndActive(postId,1)){
+                flag=true;
+            }
+        }
+        catch (Exception e){
+            System.out.println("Service: PostService, Method: postExists, Error: "+e.getMessage());
+        }
+        return flag;
+    }
+
+    public boolean updatePost(Integer id, String title,String shortDescription, String details, Timestamp updateTime){
+        boolean flag=false;
+        Post post= postRepository.getOne(id);
+        try{
+            postHistoryRepository.save(new PostHistory(null,post.getId(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getUpdatedAt()));
+            post.setTitle(title);
+            post.setShortDescription(shortDescription);
+            post.setDetails(details);
+            post.setUpdatedAt(updateTime);
+            postRepository.save(post);
+            flag=true;
+        }
+        catch (Exception e){
+            System.out.println("Service: PostService, Method: updatePost, Error: "+e.getMessage());
+        }
+        return flag;
     }
 
 
