@@ -63,12 +63,20 @@ public class UserService {
         return passwordEncoder.encode(plainText);
     }
 
-    public void addUser(SignupRequest signupRequest){
+    public String addUser(SignupRequest signupRequest){
+        if(signupRequest.getUserName().length()==0) return "username can not be empty!";
+        if(signupRequest.getFirstName().length()==0 || signupRequest.getLastName().length()==0) return "Name can not be empty!";
+        if(signupRequest.getPassword().length()<8) return "Password should contain at least 8 characters!";
+        if(!isValidEmailPattern(signupRequest.getEmail())) return "Invalid email!";
+        if(!isValidUserNamePattern(signupRequest.getUserName())) return "Invalid username!!";
+        if(userNameExist(signupRequest.getUserName())) return "username is taken!";
+        if(emailExist(signupRequest.getEmail())) return "Email already exists!";
         User user=new User(signupRequest.getUserName(), encodePassword(signupRequest.getPassword()), signupRequest.getEmail(), true, "ROLE_user");
         user.setActive(true);
         userRepository.save(user);
         UserDetails userDetails=new UserDetails(userRepository.findByUserName(signupRequest.getUserName()).get().getUserId(), "ROLE_user", signupRequest.getFirstName(), signupRequest.getLastName(), signupRequest.getEmail());
         userDetailsRepository.save(userDetails);
+        return "Registration Successful!";
     }
     public Optional<User> fetchByCredential(String credential){
         Optional<User> user=userRepository.findByUserName(credential);

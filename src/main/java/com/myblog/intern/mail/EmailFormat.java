@@ -21,15 +21,15 @@ public class EmailFormat {
 
     public EmailFormat(){
     }
-    public void setValues(UserDetails userDetails) throws ParseException {
+    public void setValues(UserDetails userDetails, String url) throws ParseException {
         this.to = userDetails.getEmail();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         Date date = new Date(System.currentTimeMillis());
         this.subject="BlogSite Reset Password";
         this.body= "Hi "+userDetails.getFirstName()+",\n"+"\nYour BlogSite password is requested to change on "+sdf.parse(sdf.format(date))
-                +".If you did this, you can safely reset your password with this link:\n"
-                +"\nIf you didn't do this, please secure your account in this link:.\n" +
+                +".If you did this, you can safely reset your password with this link:\n"+url+"\n"
+                +"\nIf you didn't do this, please ignore this email.\n" +
                 "\nThanks,\n" +
                 "The BlogSite Security Team";
     }
