@@ -1,10 +1,8 @@
-package com.myblog.intern.services;
+package com.myblog.intern.service;
 
 
 import com.myblog.intern.model.User;
-import com.myblog.intern.model.UserDetails;
 import com.myblog.intern.repository.ChangePasswordRepository;
-import com.myblog.intern.repository.UserEditProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

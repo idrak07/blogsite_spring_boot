@@ -2,45 +2,44 @@ package com.myblog.intern.controller;
 
 import com.myblog.intern.model.User;
 import com.myblog.intern.request.passwordRequest;
-import com.myblog.intern.services.ChangePasswordService;
+import com.myblog.intern.service.ChangePasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/changePassword")
 public class ChangePasswordController {
     @Autowired
     private ChangePasswordService changePasswordService;
-   // private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/reset")
-    public ResponseEntity<String> resetPassword(@RequestBody passwordRequest request)  throws RuntimeException {
-        User user;
+    public ResponseEntity<String> resetPassword(@RequestBody passwordRequest request, User user) throws RuntimeException {
+        String encodedOldPassword = passwordEncoder.encode(request.getOldPassword());
+        String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
         try {
-        //    String encoded=passwordEncoder.encode(request.getOldPassword());
-            user=changePasswordService.getByPassword(request.getOldPassword());
 
-        }catch (Exception ex){
+            user = changePasswordService.getByPassword(encodedOldPassword);
+
+        } catch (Exception ex) {
             ex.getMessage();
-            return new ResponseEntity<String> ("Password didn't match", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        try{
-            user.setPassword(request.getNewPassword());
+        try {
+            user.setPassword(encodedNewPassword);
             changePasswordService.saveUpdateProfile(user);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.getMessage();
-            return new ResponseEntity<String> ("Password could not change", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>("Password could not change", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<String> ("Successfully Changed Password", HttpStatus.OK);
-    }
+        return new ResponseEntity<String>("Successfully Changed Password", HttpStatus.OK);
 //    public  boolean  resetPassword(HttpServletRequest request, User user){
 //        String newPassword=request.getParameter("newPassword");
 //        String oldPassword=request.getParameter("oldPassword");
@@ -55,4 +54,5 @@ public class ChangePasswordController {
 //        return true;
 //    }
 
+    }
 }
