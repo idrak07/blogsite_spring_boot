@@ -1,23 +1,36 @@
 package com.myblog.intern.model;
 
+import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
+@Entity
+@Table(name = "comment")
 public class Comment {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+    @Column(name = "user_id")
     private Integer userId;
+    @Column(name = "post_id")
     private Integer postId;
-    private Date date;
+    @Column(name = "date")
+    private Timestamp date;
+    @Column(name = "active")
+    private Integer active;
+    @Column(name = "details")
     private String details;
 
     public Comment() {
     }
 
-    public Comment(Integer id, Integer userId, Integer postId, Date date, String details) {
+    public Comment(Integer id, Integer userId, Integer postId, Timestamp date, String details) {
         this.id = id;
         this.userId = userId;
         this.postId = postId;
         this.date = date;
+        this.active=1;
         this.details = details;
     }
 
@@ -45,12 +58,20 @@ public class Comment {
         this.postId = postId;
     }
 
-    public Date getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Timestamp date) {
         this.date = date;
+    }
+
+    public Integer getActive() {
+        return active;
+    }
+
+    public void setActive(Integer active) {
+        this.active = active;
     }
 
     public String getDetails() {
@@ -68,6 +89,7 @@ public class Comment {
                 ", userId=" + userId +
                 ", postId=" + postId +
                 ", date=" + date +
+                ", active=" + active +
                 ", details='" + details + '\'' +
                 '}';
     }

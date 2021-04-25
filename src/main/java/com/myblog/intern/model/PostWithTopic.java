@@ -1,52 +1,31 @@
 package com.myblog.intern.model;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-import javax.persistence.*;
+import javax.persistence.Column;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
-@Entity
-@Table(name = "post")
-public class Post {
-    @Id
-    @Column(name = "id", updatable = false, nullable = false)
-    @GeneratedValue(generator = "sequence-generator")
-    @GenericGenerator(
-            name = "sequence-generator",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @Parameter(name = "sequence_name", value = "post_sequence"),
-                    @Parameter(name = "initial_value", value = "1001"),
-                    @Parameter(name = "increment_size", value = "1")
-            }
-    )
+/*This model is used to bind post and selected topic */
+public class PostWithTopic {
     private Integer id;
-    @Column(name = "user_id")
     private Integer userId;
-    @Column(name = "post_time")
     private Timestamp date;
-    @Column(name = "title")
     private String title;
-    @Column(name = "short_description")
     private String shortDescription;
-    @Column(name = "details")
     private String details;
-    @Column(name = "active")
     private Integer active;
-    @Column(name = "updated_at")
     private Timestamp updatedAt;
-    @Column(name = "view")
     private Integer view;
-    @Column(name = "likes")
     private Integer likes;
-    @Column(name = "comments")
     private Integer comments;
+    private List<Integer>topicList;
 
-    public Post() {
+
+    public PostWithTopic() {
     }
 
-    public Post(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view, Integer likes, Integer comments) {
+    public PostWithTopic(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view, Integer likes, Integer comments, List<Integer> topicList) {
         this.id = id;
         this.userId = userId;
         this.date = date;
@@ -58,6 +37,7 @@ public class Post {
         this.view = view;
         this.likes = likes;
         this.comments = comments;
+        this.topicList = topicList;
     }
 
     public Integer getId() {
@@ -148,9 +128,17 @@ public class Post {
         this.comments = comments;
     }
 
+    public List<Integer> getTopicList() {
+        return topicList;
+    }
+
+    public void setTopicList(List<Integer> topicList) {
+        this.topicList = topicList;
+    }
+
     @Override
     public String toString() {
-        return "Post{" +
+        return "PostWithTopic{" +
                 "id=" + id +
                 ", userId=" + userId +
                 ", date=" + date +
@@ -162,6 +150,7 @@ public class Post {
                 ", view=" + view +
                 ", likes=" + likes +
                 ", comments=" + comments +
+                ", topicList=" + topicList +
                 '}';
     }
 }

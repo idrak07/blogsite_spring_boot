@@ -1,52 +1,27 @@
 package com.myblog.intern.model;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-import javax.persistence.*;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
-@Entity
-@Table(name = "post")
-public class Post {
-    @Id
-    @Column(name = "id", updatable = false, nullable = false)
-    @GeneratedValue(generator = "sequence-generator")
-    @GenericGenerator(
-            name = "sequence-generator",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @Parameter(name = "sequence_name", value = "post_sequence"),
-                    @Parameter(name = "initial_value", value = "1001"),
-                    @Parameter(name = "increment_size", value = "1")
-            }
-    )
+public class CompletePost {
     private Integer id;
-    @Column(name = "user_id")
     private Integer userId;
-    @Column(name = "post_time")
     private Timestamp date;
-    @Column(name = "title")
     private String title;
-    @Column(name = "short_description")
     private String shortDescription;
-    @Column(name = "details")
     private String details;
-    @Column(name = "active")
     private Integer active;
-    @Column(name = "updated_at")
     private Timestamp updatedAt;
-    @Column(name = "view")
     private Integer view;
-    @Column(name = "likes")
     private Integer likes;
-    @Column(name = "comments")
     private Integer comments;
+    private List<Integer> topics;
+    private List<Comment> commentList;
 
-    public Post() {
+    public CompletePost() {
     }
 
-    public Post(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view, Integer likes, Integer comments) {
+    public CompletePost(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view, Integer likes, Integer comments, List<Integer> topics, List<Comment> commentList) {
         this.id = id;
         this.userId = userId;
         this.date = date;
@@ -58,6 +33,8 @@ public class Post {
         this.view = view;
         this.likes = likes;
         this.comments = comments;
+        this.topics = topics;
+        this.commentList = commentList;
     }
 
     public Integer getId() {
@@ -148,9 +125,25 @@ public class Post {
         this.comments = comments;
     }
 
+    public List<Integer> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(List<Integer> topics) {
+        this.topics = topics;
+    }
+
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
+
     @Override
     public String toString() {
-        return "Post{" +
+        return "CompletePost{" +
                 "id=" + id +
                 ", userId=" + userId +
                 ", date=" + date +
@@ -162,6 +155,8 @@ public class Post {
                 ", view=" + view +
                 ", likes=" + likes +
                 ", comments=" + comments +
+                ", topics=" + topics +
+                ", commentList=" + commentList +
                 '}';
     }
 }
