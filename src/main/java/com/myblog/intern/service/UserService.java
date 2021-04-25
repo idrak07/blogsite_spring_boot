@@ -20,4 +20,17 @@ public class UserService {
         }
         return userId;
     }
+    public boolean userExists(Integer userid){
+        boolean flag=false;
+        try{
+            if (userRepository.existsById(userid)){
+                flag=true;
+            }
+        }
+        catch (Exception e){
+            System.out.println("Service: UserService, Method: getUserIdByUserName, Error:"+e.getMessage());
+        }
+        return flag;
+    }
+
 }

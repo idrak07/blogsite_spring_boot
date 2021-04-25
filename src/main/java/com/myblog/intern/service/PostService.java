@@ -79,6 +79,17 @@ public class PostService {
         return posts;
     }
 
+    public List<Post> mostViewedPost(){
+        List<Post> posts = null;
+        try {
+            posts=postRepository.findAllByActiveOrderByViewDesc(1);
+        }
+        catch (Exception e){
+            System.out.println("Service: PostService, Method: mostViewedPost, Error: "+e.getMessage());
+        }
+        return posts;
+    }
+
     public boolean postExists(Integer postId){
         boolean flag= false;
         try{
@@ -125,4 +136,6 @@ public class PostService {
         }
         return flag;
     }
+
+
 }

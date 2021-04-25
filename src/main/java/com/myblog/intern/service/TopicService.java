@@ -34,5 +34,18 @@ public class TopicService {
         return  topics;
     }
 
+    public boolean topicExists(List<Integer> topicIds){
+        boolean flag=false;
+        for (int i=0;i<topicIds.size();i++){
+            if (topicRepository.existsById(topicIds.get(i))){
+                flag=true;
+            }
+            else {
+                flag=false;
+            }
+        }
+        return flag;
+    }
+
 
 }

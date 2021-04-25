@@ -1,12 +1,7 @@
 package com.myblog.intern.controller;
 
-import com.myblog.intern.model.Post;
-import com.myblog.intern.model.PostWithTopic;
-import com.myblog.intern.model.SelectedTopic;
-import com.myblog.intern.service.PostSequenceService;
-import com.myblog.intern.service.PostWithTopicService;
-import com.myblog.intern.service.SelectedTopicService;
-import com.myblog.intern.service.PostService;
+import com.myblog.intern.model.*;
+import com.myblog.intern.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
@@ -18,14 +13,23 @@ import java.util.List;
 public class PostController {
 
     @Autowired
+    UserService userService;
+    @Autowired
     PostService postService;
     @Autowired
     SelectedTopicService selectedTopicService;
     @Autowired
     PostSequenceService postSequenceService;
-
+    @Autowired
+    TopicService topicService;
     @Autowired
     PostWithTopicService postWithTopicService;
+
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    LikeService likeService;
 
     /*This method provide new post create option for user
     * Url: localhost:8080/post/create
@@ -44,15 +48,25 @@ public class PostController {
             Timestamp date = new Timestamp(System.currentTimeMillis());
             Post post=new Post(id,postWithTopic.getUserId(),date,postWithTopic.getTitle(),postWithTopic.getShortDescription(),postWithTopic.getDetails(),postWithTopic.getActive(),date,0,0,0);
 
-            if(postService.createPost(post)){
-                for(int i=0;i<postWithTopic.getTopicList().size();i++){
-                    SelectedTopic selectedTopic=new SelectedTopic( postWithTopic.getTopicList().get(i),id);
-                    selectedTopicService.createNewSelectedTopic(selectedTopic);
+            if (userService.userExists(postWithTopic.getUserId())){
+                if (topicService.topicExists(postWithTopic.getTopicList())){
+                    if(postService.createPost(post)){
+                        for(int i=0;i<postWithTopic.getTopicList().size();i++){
+                            SelectedTopic selectedTopic=new SelectedTopic( postWithTopic.getTopicList().get(i),id);
+                            selectedTopicService.createNewSelectedTopic(selectedTopic);
+                        }
+                        result= "New post created";
+                    }
+                    else{
+                        result= "Sorry! Problem found";
+                    }
                 }
-               result= "New post created";
+                else{
+                    result= "Sorry! Topic doesn't exist";
+                }
             }
-            else{
-                result= "Sorry! Problem found";
+            else {
+                result= "Sorry! User doesn't exists";
             }
             
         }
@@ -94,7 +108,7 @@ public class PostController {
      * Url: localhost:8080/post/{postId}/delete
      * Data : Not needed, only postId
      *  */
-    @RequestMapping(value = "/post/{postId}/delete", method = RequestMethod.GET)
+        @RequestMapping(value = "/post/{postId}/delete", method = RequestMethod.GET)
     public boolean deletePost(@PathVariable Integer postId){
         boolean flag=false;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
@@ -114,27 +128,6 @@ public class PostController {
 
 
 
-    /*Recent Post list
-    * Url: localhost:8080/posts/categories/recent
-    * Method:get
-    * Data: no data required
-    * */
-    @RequestMapping(value = "/posts/categories/recent")
-    public List<PostWithTopic> getRecentPostList(){
-        List<Post> posts;
-        List<PostWithTopic> postWithTopics=new ArrayList<>();
-        try {
-            posts=postService.getRecentPosts();
-            postWithTopics=postWithTopicService.getPostsWithTopic(posts);
-        }
-        catch (Exception e){
-            System.out.println("Controller: PostController, Method: getRecentPostList, Error: "+e.getMessage());
-        }
-        return  postWithTopics;
-
-    }
-
-
 
 
     /*This method is used to get specific post
@@ -142,19 +135,21 @@ public class PostController {
     * Data :Change value 12 for different result as it is post id
     * */
     @RequestMapping(value = "/post/{postId}")
-    public PostWithTopic getPost(@PathVariable Integer postId){
-        PostWithTopic postWithTopic=null;
+    public CompletePost getPost(@PathVariable Integer postId){
+
+        CompletePost completePost=null;
       try{
          if (postService.postExists(postId)){
              Post post= postService.getPostById(postId);
              List<Integer> selectedTopic= selectedTopicService.getSelectedTopicByPostId(postId);
-             postWithTopic=new PostWithTopic(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getActive(),post.getUpdatedAt(),post.getView(),post.getLikes(),post.getComments(),selectedTopic);
+             List<Comment> commentList= commentService.getCommentByPostId(postId);
+             completePost=new CompletePost(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getActive(),post.getUpdatedAt(),post.getView(),post.getLikes(),post.getComments(),selectedTopic,commentList);
          }
       }
       catch (Exception e){
           System.out.println(e.getMessage());
       }
-        return postWithTopic;
+        return completePost;
     }
 
     /*This method is used for removing selected topic from a post
@@ -199,6 +194,95 @@ public class PostController {
 
         return  result;
     }
+
+
+
+    /*Recent Post list
+     * Url: localhost:8080/posts/categories/recent
+     * Method:get
+     * Data: no data required
+     * */
+    @RequestMapping(value = "/posts/categories/recent")
+    public List<PostWithTopic> getRecentPostList(){
+        List<Post> posts;
+        List<PostWithTopic> postWithTopics=new ArrayList<>();
+        try {
+            posts=postService.getRecentPosts();
+            postWithTopics=postWithTopicService.getPostsWithTopic(posts);
+        }
+        catch (Exception e){
+            System.out.println("Controller: PostController, Method: getRecentPostList, Error: "+e.getMessage());
+        }
+        return  postWithTopics;
+
+    }
+
+    /*Most Viewed Post list
+     * Url: localhost:8080/posts/categories/most-viewed
+     * Method:get
+     * Data: no data required
+     * */
+    @RequestMapping(value = "/posts/categories/most-viewed", method = RequestMethod.GET)
+    public List<PostWithTopic> getMostViewedPostList(){
+        /*List<Post> posts;*/
+        List<PostWithTopic> postWithTopics=new ArrayList<>();
+        try {
+            /*posts=postService.getRecentPosts();*/
+            postWithTopics=postWithTopicService.getPostsWithTopic(postService.mostViewedPost());
+        }
+        catch (Exception e){
+            System.out.println("Controller: PostController, Method: getRecentPostList, Error: "+e.getMessage());
+        }
+        return  postWithTopics;
+    }
+
+    @RequestMapping(value = "/post/{postId}/comment/add", method = RequestMethod.POST)
+    public boolean addNewComment(@PathVariable Integer postId, @RequestBody Comment comment){
+        boolean flag=false;
+        try {
+            if (postService.postExists(postId)){
+                if (userService.userExists(comment.getUserId())){
+                    comment.setActive(1);
+                    comment.setPostId(postId);
+                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                    Timestamp date = new Timestamp(System.currentTimeMillis());
+                    comment.setDate(date);
+                    if (commentService.addNewComment(comment)){
+                        flag=true;
+                    }
+                }
+            }
+        }
+        catch (Exception e){
+            System.out.println("Controller: PostController, Method: addNewComment, Error: "+e.getMessage());
+        }
+        return flag;
+    }
+
+
+
+    @RequestMapping(value = "/post/{postId}/like/add/{username}", method = RequestMethod.GET)
+    public boolean addNewLike(@PathVariable Integer postId,@PathVariable String username){
+        boolean flag=false;
+        Integer userId;
+        try {
+            if (postService.postExists(postId)){
+                userId=userService.getUserIdByUserName(username);
+                if (userService.userExists(userId)){
+                    if(!likeService.likeExists(userId,postId)){
+                        if (likeService.addLike(new Like(null,userId,postId))){
+                            flag=true;
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e){
+            System.out.println("Controller: PostController, Method: addNewComment, Error: "+e.getMessage());
+        }
+        return flag;
+    }
+
 
 
 
