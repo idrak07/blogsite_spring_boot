@@ -111,4 +111,18 @@ public class PostService {
     }
 
 
+    public boolean deletePost(Integer postId, Timestamp updateTime) {
+        boolean flag=false;
+        Post post= postRepository.getOne(postId);
+        try{
+            post.setActive(0);
+            post.setUpdatedAt(updateTime);
+            postRepository.save(post);
+            flag=true;
+        }
+        catch (Exception e){
+            System.out.println("Service: PostService, Method: deletePost, Error: "+e.getMessage());
+        }
+        return flag;
+    }
 }

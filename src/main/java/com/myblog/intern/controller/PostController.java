@@ -63,7 +63,7 @@ public class PostController {
     }
 
 
-    /*This method provide new post create option for user
+    /*This method provide post update option for user
      * Url: localhost:8080/post/{postId}/update
      * Data :
      * At first check you have a user with user id with value 1 in user table
@@ -79,6 +79,29 @@ public class PostController {
         try {
             if (postService.postExists(postId)){
                 if (postService.updatePost(postId,post.getTitle(),post.getShortDescription(),post.getDetails(),updateTime)){
+                    flag=true;
+                }
+            }
+        }
+        catch (Exception e){
+            System.out.println("Controller: PostController , Method: updatePost, Error: "+e.getMessage());
+        }
+        return flag;
+    }
+
+
+    /*This method provide new post create option for user
+     * Url: localhost:8080/post/{postId}/delete
+     * Data : Not needed, only postId
+     *  */
+    @RequestMapping(value = "/post/{postId}/delete", method = RequestMethod.GET)
+    public boolean deletePost(@PathVariable Integer postId){
+        boolean flag=false;
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+        try {
+            if (postService.postExists(postId)){
+                if (postService.deletePost(postId,updateTime)){
                     flag=true;
                 }
             }
@@ -122,10 +145,11 @@ public class PostController {
     public PostWithTopic getPost(@PathVariable Integer postId){
         PostWithTopic postWithTopic=null;
       try{
-          Post post= postService.getPostById(postId);
-          List<Integer> selectedTopic= selectedTopicService.getSelectedTopicByPostId(postId);
-          postWithTopic=new PostWithTopic(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getActive(),post.getUpdatedAt(),post.getView(),post.getLikes(),post.getComments(),selectedTopic);
-
+         if (postService.postExists(postId)){
+             Post post= postService.getPostById(postId);
+             List<Integer> selectedTopic= selectedTopicService.getSelectedTopicByPostId(postId);
+             postWithTopic=new PostWithTopic(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getActive(),post.getUpdatedAt(),post.getView(),post.getLikes(),post.getComments(),selectedTopic);
+         }
       }
       catch (Exception e){
           System.out.println(e.getMessage());
