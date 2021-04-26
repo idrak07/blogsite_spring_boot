@@ -26,6 +26,8 @@ public class UserService {
     UserDetailsRepository userDetailsRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    TokenService tokenService;
 
     public String Test(LoginRequest loginRequest){
         return loginRequest.getUsername();
@@ -46,14 +48,15 @@ public class UserService {
         return userList;
     }
     public boolean isValidEmailPattern(String email){
-        String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+        //String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+        String regex="[_a-zA-Z1-9]+(\\.[A-Za-z0-9]*)*@[A-Za-z0-9]+\\.[A-Za-z0-9]+(\\.[A-Za-z][A-Za-z0-9]*)*";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher= pattern.matcher(email);
         return matcher.matches();
     }
 
     public boolean isValidUserNamePattern(String userName){
-        String regex = "^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-z0-9._]+(?<![_.])$";
+        String regex = "^(?=.{6,20}$)(?![_.])(?!.*[_.]{2})[a-z0-9._]+(?<![_.])$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher= pattern.matcher(userName);
         return matcher.matches();
@@ -83,13 +86,14 @@ public class UserService {
         if(!user.isPresent()) user= userRepository.findByEmail(credential);
         return user;
     }
-    public String updatePassword(Integer userId, PasswordChangeRequest passwordChangeRequest){
+    public String updatePassword(Integer userId, String userName, PasswordChangeRequest passwordChangeRequest){
         if(passwordChangeRequest.getNewPassword().length()<8) return "Password should contain at least 8 characters!";
         if(passwordChangeRequest.getNewPassword().equals(passwordChangeRequest.getConfirmNewPassword())){
             Optional<User> user=userRepository.findById(userId);
             User myUser=user.get();
             myUser.setPassword(encodePassword(passwordChangeRequest.getNewPassword()));
             userRepository.save(myUser);
+            tokenService.deleteByUserName(user.get().getUserName());
             return "Password reset successful!";
         }
         return "Password did not match!";

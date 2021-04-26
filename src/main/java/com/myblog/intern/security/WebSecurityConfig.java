@@ -30,7 +30,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers("/authenticate","/signup","/hello","/users","/reset-password","/security-question", "/security-answer", "/reset-password/**").permitAll()
+                .authorizeRequests().antMatchers("/admin-panel").hasRole("admin")
+                .antMatchers("/authenticate","/signup","/reset-password","/security-question", "/security-answer", "/reset-password/**").permitAll()
                 .anyRequest().authenticated().and().formLogin().and()
                 .exceptionHandling().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

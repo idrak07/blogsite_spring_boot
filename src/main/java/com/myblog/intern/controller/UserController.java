@@ -104,7 +104,12 @@ public class UserController {
         if(tokenObj.get().isExpire()) return ResponseEntity.badRequest().body("The request has been expired!");
         Optional<User> user=userService.fetchByCredential(tokenObj.get().getUserName());
         com.myblog.intern.model.UserDetails userDetails= userService.getUserDetails(user.get());
-        tokenService.deleteByUserName(user.get().getUserName());
-        return ResponseEntity.ok(userService.updatePassword(userDetails.getUserId(), passwordChangeRequest));
+        //tokenService.deleteByUserName(user.get().getUserName());
+        return ResponseEntity.ok(userService.updatePassword(userDetails.getUserId(), user.get().getUserName(), passwordChangeRequest));
+    }
+
+    @RequestMapping("/admin-panel")
+    public String adminPanel(){
+        return "Admin!";
     }
 }

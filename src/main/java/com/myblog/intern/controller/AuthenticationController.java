@@ -35,13 +35,15 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         Optional<User> user= userService.fetchByCredential(authenticationRequest.getCredential());
+        if(!user.isPresent()) return ResponseEntity.ok("Incorrect credential or password!");
         try {
+            UsernamePasswordAuthenticationToken token= new UsernamePasswordAuthenticationToken(user.get().getUserName(), authenticationRequest.getPassword());
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.get().getUserName(), authenticationRequest.getPassword())
-            );
+                    token);
         }
-        catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
+        catch (Exception e) {
+            //throw new Exception("Incorrect credential or password!", e);
+            return ResponseEntity.unprocessableEntity().body("Incorrect credential or password!");
         }
 
 
