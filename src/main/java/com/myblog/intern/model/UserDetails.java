@@ -1,21 +1,46 @@
 package com.myblog.intern.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name= "user_details")
 public class UserDetails {
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="id")
     private Integer id;
+    @Column(name="user_id")
     private Integer userId;
+    @Column(name="role")
     private String role;
+    @Column(name="first_name")
     private String firstName;
+    @Column(name="last_name")
     private String lastName;
+    @Column(name="email")
     private String email;
+    @Column(name="birth_date")
     private Integer birthDate;
+    @Column(name="birth_month")
     private Integer birthMonth;
+    @Column(name="birth_year")
     private Integer birthYear;
+    @Column(name="street")
     private String street;
+    @Column(name="state")
     private String state;
+    @Column(name="country")
     private String country;
+    @Column(name="zip_code")
     private Integer zipCode;
+    @Column(name="contact")
     private String contact;
+    @Column(name="profile_pic")
     private String profilePic;
+    @Column(name="security_question")
+    private String securityQuestion;
+    @Column(name="security_answer")
+    private String securityAnswer;
 
     public UserDetails() {
     }
@@ -36,6 +61,29 @@ public class UserDetails {
         this.zipCode = zipCode;
         this.contact = contact;
         this.profilePic = profilePic;
+    }
+    public UserDetails(Integer userId, String role, String firstName, String lastName, String email){
+        this.userId=userId;
+        this.role= role;
+        this.firstName=firstName;
+        this.lastName=lastName;
+        this.email=email;
+    }
+
+    public String getSecurityQuestion() {
+        return securityQuestion;
+    }
+
+    public void setSecurityQuestion(String securityQuestion) {
+        this.securityQuestion = securityQuestion;
+    }
+
+    public String getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(String securityAnswer) {
+        this.securityAnswer = securityAnswer;
     }
 
     public Integer getId() {
