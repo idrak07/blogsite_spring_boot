@@ -86,7 +86,7 @@ public class UserService {
         if(!user.isPresent()) user= userRepository.findByEmail(credential);
         return user;
     }
-    public String updatePassword(Integer userId, String userName, PasswordChangeRequest passwordChangeRequest){
+    public String updatePassword(Integer userId, PasswordChangeRequest passwordChangeRequest){
         if(passwordChangeRequest.getNewPassword().length()<8) return "Password should contain at least 8 characters!";
         if(passwordChangeRequest.getNewPassword().equals(passwordChangeRequest.getConfirmNewPassword())){
             Optional<User> user=userRepository.findById(userId);

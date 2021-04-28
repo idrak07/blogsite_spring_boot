@@ -105,7 +105,7 @@ public class UserController {
         Optional<User> user=userService.fetchByCredential(tokenObj.get().getUserName());
         com.myblog.intern.model.UserDetails userDetails= userService.getUserDetails(user.get());
         //tokenService.deleteByUserName(user.get().getUserName());
-        return ResponseEntity.ok(userService.updatePassword(userDetails.getUserId(), user.get().getUserName(), passwordChangeRequest));
+        return ResponseEntity.ok(userService.updatePassword(userDetails.getUserId(), passwordChangeRequest));
     }
 
     @RequestMapping("/admin-panel")
