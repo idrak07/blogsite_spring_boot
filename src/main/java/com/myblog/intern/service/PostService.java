@@ -7,6 +7,7 @@ import com.myblog.intern.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
@@ -18,6 +19,10 @@ public class PostService {
     PostRepository postRepository;
     @Autowired
     PostHistoryRepository postHistoryRepository;
+    @Autowired
+    JwtService jwtService;
+    @Autowired
+    UserService userService;
 
     public boolean createPost(Post post){
         boolean flag;
@@ -103,9 +108,13 @@ public class PostService {
         return flag;
     }
 
-    public boolean updatePost(Integer id, String title,String shortDescription, String details, Timestamp updateTime){
+    public boolean updatePost(HttpServletRequest request, Integer id, String title, String shortDescription, String details, Timestamp updateTime){
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
+        Integer userIdRequest= userService.getUserIdByUserName(username);
         boolean flag=false;
         Post post= postRepository.getOne(id);
+        Integer userIdPost= post.getUserId();
+        if(userIdRequest!=userIdPost) return false;
         try{
             postHistoryRepository.save(new PostHistory(null,post.getId(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getUpdatedAt()));
             post.setTitle(title);
@@ -122,9 +131,13 @@ public class PostService {
     }
 
 
-    public boolean deletePost(Integer postId, Timestamp updateTime) {
+    public boolean deletePost(HttpServletRequest request, Integer postId, Timestamp updateTime) {
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
+        Integer userIdRequest= userService.getUserIdByUserName(username);
         boolean flag=false;
         Post post= postRepository.getOne(postId);
+        Integer userIdPost=post.getUserId();
+        if(userIdRequest!=userIdPost) return false;
         try{
             post.setActive(0);
             post.setUpdatedAt(updateTime);

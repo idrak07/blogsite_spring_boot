@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +27,12 @@ public class SavedPostController {
     SelectedTopicService selectedTopicService;
     @Autowired
     PostWithTopicService postWithTopicService;
+    @Autowired
+    JwtService jwtService;
 
-    @RequestMapping(value = "/{username}/post/saved", method = RequestMethod.GET)
-    public List<PostWithTopic> getSavedPostByUser(@PathVariable String username){
+    @RequestMapping(value = "/post/saved", method = RequestMethod.GET)
+    public List<PostWithTopic> getSavedPostByUser(HttpServletRequest request){
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
         Integer userId;
         List<Post> posts;
         List<PostWithTopic> postWithTopics=new ArrayList<>();
@@ -46,8 +50,9 @@ public class SavedPostController {
         return postWithTopics;
     }
 
-    @RequestMapping(value = "/{username}/post/save/{postId}", method = RequestMethod.GET)
-    public boolean setSavedPostByUser(@PathVariable String username, @PathVariable Integer postId){
+    @RequestMapping(value = "/post/save/{postId}", method = RequestMethod.GET)
+    public boolean setSavedPostByUser(HttpServletRequest request, @PathVariable Integer postId){
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
         boolean flag=false;
         Integer userId;
         try {
@@ -67,8 +72,9 @@ public class SavedPostController {
         }
         return flag;
     }
-    @RequestMapping(value = "/{username}/post/remove-save/{postId}", method = RequestMethod.GET)
-    public boolean removeSavedPostByUser(@PathVariable String username,@PathVariable Integer postId){
+    @RequestMapping(value = "/post/remove-save/{postId}", method = RequestMethod.GET)
+    public boolean removeSavedPostByUser(HttpServletRequest request,@PathVariable Integer postId){
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
         boolean flag=false;
         Integer userId;
         try {

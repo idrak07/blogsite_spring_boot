@@ -4,6 +4,8 @@ import com.myblog.intern.model.*;
 import com.myblog.intern.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ public class PostController {
 
     @Autowired
     LikeService likeService;
+    @Autowired
+    JwtService jwtService;
 
     /*This method provide new post create option for user
     * Url: localhost:8080/post/create
@@ -40,35 +44,30 @@ public class PostController {
     * {"userId":1,"title":"My third post","shortDescription": "This is short desc","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A","active":1,"images":",nsdvf","topicList": [1,4]}
      * */
     @RequestMapping(value = "/post/create", method = RequestMethod.POST)
-    public String createNewPost(@RequestBody PostWithTopic postWithTopic){
+    public String createNewPost(@RequestBody PostWithTopic postWithTopic, HttpServletRequest request){
         String result=null;
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
+        Integer userId= userService.getUserIdByUserName(username);
         Integer id=postSequenceService.getNextVal();
         try{
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
             Timestamp date = new Timestamp(System.currentTimeMillis());
-            Post post=new Post(id,postWithTopic.getUserId(),date,postWithTopic.getTitle(),postWithTopic.getShortDescription(),postWithTopic.getDetails(),postWithTopic.getActive(),date,0,0,0);
-
-            if (userService.userExists(postWithTopic.getUserId())){
-                if (topicService.topicExists(postWithTopic.getTopicList())){
-                    if(postService.createPost(post)){
-                        for(int i=0;i<postWithTopic.getTopicList().size();i++){
-                            SelectedTopic selectedTopic=new SelectedTopic( postWithTopic.getTopicList().get(i),id);
-                            selectedTopicService.createNewSelectedTopic(selectedTopic);
-                        }
-                        result= "New post created";
+            Post post=new Post(id, userId,date,postWithTopic.getTitle(),postWithTopic.getShortDescription(),postWithTopic.getDetails(),postWithTopic.getActive(),date,0,0,0);
+            if (topicService.topicExists(postWithTopic.getTopicList())){
+                if(postService.createPost(post)){
+                    for(int i=0;i<postWithTopic.getTopicList().size();i++){
+                        SelectedTopic selectedTopic=new SelectedTopic( postWithTopic.getTopicList().get(i),id);
+                        selectedTopicService.createNewSelectedTopic(selectedTopic);
                     }
-                    else{
-                        result= "Sorry! Problem found";
-                    }
+                    result= "New post created";
                 }
                 else{
-                    result= "Sorry! Topic doesn't exist";
+                    result= "Sorry! Problem found";
                 }
             }
-            else {
-                result= "Sorry! User doesn't exists";
+            else{
+                result= "Sorry! Topic doesn't exist";
             }
-            
         }
         catch (Exception e){
             System.out.println("Controller: PostController , Method: CreatePost, Error: "+e.getMessage());
@@ -86,13 +85,13 @@ public class PostController {
      * {"title":"My third post","shortDescription": "This is short desc","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A"}
      * */
     @RequestMapping(value = "/post/{postId}/update", method = RequestMethod.POST)
-    public boolean updatePost(@PathVariable Integer postId, @RequestBody Post post){
+    public boolean updatePost(@PathVariable Integer postId, @RequestBody Post post, HttpServletRequest request){
         boolean flag=false;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         Timestamp updateTime = new Timestamp(System.currentTimeMillis());
         try {
             if (postService.postExists(postId)){
-                if (postService.updatePost(postId,post.getTitle(),post.getShortDescription(),post.getDetails(),updateTime)){
+                if (postService.updatePost(request,postId,post.getTitle(),post.getShortDescription(),post.getDetails(),updateTime)){
                     flag=true;
                 }
             }
@@ -109,13 +108,13 @@ public class PostController {
      * Data : Not needed, only postId
      *  */
         @RequestMapping(value = "/post/{postId}/delete", method = RequestMethod.GET)
-    public boolean deletePost(@PathVariable Integer postId){
+    public boolean deletePost(@PathVariable Integer postId, HttpServletRequest request){
         boolean flag=false;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         Timestamp updateTime = new Timestamp(System.currentTimeMillis());
         try {
             if (postService.postExists(postId)){
-                if (postService.deletePost(postId,updateTime)){
+                if (postService.deletePost(request, postId,updateTime)){
                     flag=true;
                 }
             }
