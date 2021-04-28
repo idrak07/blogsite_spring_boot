@@ -7,6 +7,7 @@ import com.myblog.intern.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -39,6 +40,17 @@ public class EditProfileServiceImpl implements EditProfileService{
     public boolean DeleteProfile(UserDetails userDetails) {
         userEditProfileRepository.deleteById(userDetails.getUserId());
         return true;
+    }
+@Override
+    public List<UserDetails> getAllByRole(String role){
+        List<UserDetails> u=userEditProfileRepository.findAllByRole("ROLE_admin");
+        return u;
+    }
+
+    @Override
+    public UserDetails getUserDetailsByUserID(int id) {
+        UserDetails u=userEditProfileRepository.findByUserId(id);
+        return  u;
     }
 
 

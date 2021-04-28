@@ -25,6 +25,12 @@ public class ReportService {
         return reportDetails;
     }
 
+    public ReportDetails  getReportById (int reportId){
+        ReportDetails reportDetails=reportRepository.findById(reportId).get();
+        reportDetails.setReportType((Report_Type.values())[reportDetails.getTypeId()]);
+        return reportDetails;
+    }
+
     public List<ReportDetails> getReportByPostId (int postId){
         List<ReportDetails> reportDetails=reportRepository.findByPostId(postId);
         for(int i=0;i<reportDetails.size();i++){

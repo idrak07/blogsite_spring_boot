@@ -26,7 +26,7 @@ public class EditProfileController {
 
         }catch (Exception ex){
             ex.getMessage();
-            return new ResponseEntity<UserDetails> (userDetails, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<> (null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<UserDetails> (userDetails, HttpStatus.OK);
     }

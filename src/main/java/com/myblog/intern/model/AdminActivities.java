@@ -1,13 +1,25 @@
 package com.myblog.intern.model;
 
+import javax.persistence.*;
 import java.sql.Date;
 
+@Entity
 public class AdminActivities {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "admin_id")
     private Integer adminId;
+
+    @Column(name = "report_id")
     private Integer reportId;
+
+    @Column(name = "time")
     private Date time;
+
+    @Column(name = "details")
     private String details;
 
     public AdminActivities() {

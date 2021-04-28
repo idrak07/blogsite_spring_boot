@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface ReportRepository extends JpaRepository<ReportDetails, Long> {
+public interface ReportRepository extends JpaRepository<ReportDetails, Integer> {
     public List<ReportDetails>  findByUserId(Integer id);
     public   List<ReportDetails> findByPostId(Integer id);
     public   List<ReportDetails> findByProfileId(Integer id);

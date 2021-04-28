@@ -25,10 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Entry points
         http.authorizeRequests()
-                .antMatchers("/changePassword/**/").permitAll()
-                .antMatchers("/profile/**/").permitAll()
-                .antMatchers("/report/**/").permitAll()
-                .antMatchers("/reportType/**/").permitAll()
+                .antMatchers("/changePassword/**/","/profile/**/","/report/**/","/reportType/**/","/admin/**/","/topic/**/","/adminActivities/**/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().disable();

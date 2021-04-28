@@ -9,6 +9,7 @@ public class Topic {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "description")
     private String description;
 
     public Topic() {

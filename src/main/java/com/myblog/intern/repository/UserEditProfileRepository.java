@@ -8,8 +8,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface UserEditProfileRepository extends JpaRepository<UserDetails,Integer> {
+
+    List<UserDetails> findAllByRole(String role);
+    UserDetails findByUserId(int id);
 //    @Modifying
 //    @Transactional
 //    @Query(value = "update user u inner join user_details s on u.user_id = s.user_id=? set u.email = s.email,u.role=s.role",nativeQuery = true)

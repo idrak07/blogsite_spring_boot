@@ -1,5 +1,4 @@
 package com.myblog.intern.model;
-
 import java.sql.Date;
 
 public class Post {

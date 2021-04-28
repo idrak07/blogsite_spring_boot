@@ -24,6 +24,7 @@ public class ChangePasswordController {
     public ResponseEntity<String> resetPassword(@RequestBody passwordRequest request, User user) throws RuntimeException {
         String encodedOldPassword = passwordEncoder.encode(request.getOldPassword());
         String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
+        if(user.getPassword().length()<8)  return new ResponseEntity<String> ("Password should contain at least 8 characters!", HttpStatus.NOT_FOUND);
         try {
 
             user = changePasswordService.getByPassword(encodedOldPassword);
