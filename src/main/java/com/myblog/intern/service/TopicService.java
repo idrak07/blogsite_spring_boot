@@ -47,5 +47,25 @@ public class TopicService {
         return flag;
     }
 
+    public Topic saveUpdateTopic(Topic topic) {
+        Topic t=topicRepository.save(topic);
+        return t;
+    }
+
+    public Topic getTopicById(int id) {
+        return topicRepository.findById(id).orElse(null);
+
+    }
+
+    public List<Topic> getAllTopic() {
+        return topicRepository.findAll();
+
+    }
+
+    public boolean DeleteTopic(Topic topic) {
+        topicRepository.deleteById(topic.getId().intValue());
+        return true;
+    }
+
 
 }
