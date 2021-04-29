@@ -13,6 +13,26 @@ import java.util.List;
 public class TopicController {
     @Autowired
     TopicService topicService;
+    /*This method is used for getting topic description by id
+     * If it is not found then it is returning null
+     * Url: localhost:8080/topic/desc/5
+     * Make sure you have data in topic table
+     * Change value 1 for different testing
+     * */
+    @RequestMapping(value = "/desc/{id}", method = RequestMethod.GET)
+    public String getSpecificTopicDesc(@PathVariable Integer id){
+        return  topicService.getTopicDescById(id);
+    }
+
+
+    /*This method is used for getting all topics
+     * User usage: when creating post
+     * Url: localhost:8080/topic/all
+     * */
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllTopic(){
+        return ResponseEntity.ok(topicService.getTopicList());
+    }
 
     @PostMapping("/addTopic")
     public ResponseEntity<String> addOrUpdateTopic(@RequestBody Topic topic)  throws RuntimeException {
@@ -60,26 +80,5 @@ public class TopicController {
             return new ResponseEntity<String> (ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<String> ("Successfully deleted topic", HttpStatus.OK);
-    }
-
-    /*This method is used for getting topic description by id
-     * If it is not found then it is returning null
-     * Url: localhost:8080/topic/desc/5
-     * Make sure you have data in topic table
-     * Change value 1 for different testing
-     * */
-    @RequestMapping(value = "/desc/{id}", method = RequestMethod.GET)
-    public String getSpecificTopicDesc(@PathVariable Integer id){
-        return  topicService.getTopicDescById(id);
-    }
-
-
-    /*This method is used for getting all topics
-     * User usage: when creating post
-     * Url: localhost:8080/topic/all
-     * */
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllTopic(){
-        return ResponseEntity.ok(topicService.getTopicList());
     }
 }
