@@ -35,12 +35,12 @@ public class AdminController {
     private Validation validation=new Validation();
 
     public boolean  userNameExist(String username){
-        Optional<User> user= Optional.ofNullable(userRepository.findByUserName(username));
+        Optional<User> user= userRepository.findByUserName(username);
         if(!user.isPresent()) return false;
         return true;
     }
     public boolean emailExist(String email){
-        Optional<User> user= Optional.ofNullable(userRepository.findByEmail(email));
+        Optional<User> user= userRepository.findByEmail(email);
         if(!user.isPresent()) return false;
         return true;
     }
@@ -170,7 +170,7 @@ public class AdminController {
             user.setRole("ROLE_admin");
             userRepository.save(user);
             UserDetails userDetails=new UserDetails();
-            userDetails.setUserId(userRepository.findByUserName(adminSignUpRequest.getUserName()).getUserId());
+            userDetails.setUserId(userRepository.findByUserName(adminSignUpRequest.getUserName()).get().getUserId());
             userDetails.setFirstName(adminSignUpRequest.getFirstName());
             userDetails.setLastName(adminSignUpRequest.getLastName());
             userDetails.setRole("ROLE_admin");
@@ -188,9 +188,9 @@ public class AdminController {
     @PostMapping("/deleteAdmin")
     public ResponseEntity<String>deleteById(@RequestBody AdminProfileRequest adminProfileRequest)  throws RuntimeException {
         try {
-            adminProfileRequest.setUserId(userRepository.findByUserName(adminProfileRequest.getUserName()).getUserId());
+            adminProfileRequest.setUserId(userRepository.findByUserName(adminProfileRequest.getUserName()).get().getUserId());
             userEditProfileRepository.deleteById(adminProfileRequest.getUserId());
-            userRepository.deleteById(userRepository.findByUserName(adminProfileRequest.getUserName()).getUserId());
+            userRepository.deleteById(userRepository.findByUserName(adminProfileRequest.getUserName()).get().getUserId());
 
         }catch (Exception ex){
             ex.getMessage();

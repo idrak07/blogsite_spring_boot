@@ -9,6 +9,7 @@ import java.util.List;
 /*This model is used to bind post and selected topic */
 public class PostWithTopic {
     private Integer id;
+    private Integer userId;
     private Timestamp date;
     private String title;
     private String shortDescription;
@@ -23,7 +24,20 @@ public class PostWithTopic {
 
     public PostWithTopic() {
     }
-
+    public PostWithTopic(Integer id, Integer userId, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view, Integer likes, Integer comments, List<Integer> topicList) {
+        this.id = id;
+        this.userId=userId;
+        this.date = date;
+        this.title = title;
+        this.shortDescription = shortDescription;
+        this.details = details;
+        this.active = active;
+        this.updatedAt = updatedAt;
+        this.view = view;
+        this.likes = likes;
+        this.comments = comments;
+        this.topicList = topicList;
+    }
     public PostWithTopic(Integer id, Timestamp date, String title, String shortDescription, String details, Integer active, Timestamp updatedAt, Integer view, Integer likes, Integer comments, List<Integer> topicList) {
         this.id = id;
         this.date = date;
@@ -124,6 +138,14 @@ public class PostWithTopic {
 
     public void setTopicList(List<Integer> topicList) {
         this.topicList = topicList;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     @Override
