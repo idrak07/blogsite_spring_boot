@@ -1,5 +1,6 @@
 package com.myblog.intern.service;
 
+import com.myblog.intern.model.Post;
 import com.myblog.intern.request.LoginRequest;
 import com.myblog.intern.request.PasswordChangeRequest;
 import com.myblog.intern.request.SignupRequest;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -126,4 +128,5 @@ public class UserService {
         }
         return flag;
     }
+
 }

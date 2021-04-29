@@ -156,17 +156,18 @@ public class PostController {
     * Change value 13 for postId and 5 for topicId
     * */
     @RequestMapping(value = "/post/{postId}/remove/topic/{topicId}")
-    public boolean removeSelectedTopic(@PathVariable Integer postId,@PathVariable Integer topicId){
+    public boolean removeSelectedTopic(@PathVariable Integer postId,@PathVariable Integer topicId, HttpServletRequest request){
         boolean result=false;
-        try{
-            if (selectedTopicService.delSelectedTopic(postId,topicId)){
-                result=true;
+        if(postService.hasPermission(request, postId)){
+            try{
+                if (selectedTopicService.delSelectedTopic(postId,topicId)){
+                    result=true;
+                }
+            }
+            catch (Exception e){
+                System.out.println(e.getMessage());
             }
         }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
         return  result;
     }
 

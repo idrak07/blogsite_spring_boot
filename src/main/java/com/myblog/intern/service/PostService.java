@@ -150,5 +150,13 @@ public class PostService {
         return flag;
     }
 
+    public boolean hasPermission(HttpServletRequest request, Integer postId){
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
+        Integer userIdRequest= userService.getUserIdByUserName(username);
+        Post post= postRepository.getOne(postId);
+        Integer userIdPost=post.getUserId();
+        if(userIdRequest==userIdPost) return true;
+        return false;
+    }
 
 }
