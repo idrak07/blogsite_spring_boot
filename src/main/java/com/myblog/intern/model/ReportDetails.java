@@ -1,12 +1,34 @@
 package com.myblog.intern.model;
 
+
+import com.myblog.intern.Enum.Report_Type;
+
+import javax.persistence.*;
+
+@Entity
 public class ReportDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private  Integer id;
+
+    @Column(name = "type_id")
     private Integer typeId;
+
+    @Column(name = "user_id")
     private Integer userId;
+
+    @Column(name = "post_id")
     private Integer postId;
+
+    @Column(name = "profile_id")
     private Integer profileId;
+
+    @Column(name = "status")
     private Integer status;
+
+    @Enumerated(EnumType.ORDINAL)
+    private Report_Type reportType;
 
     public ReportDetails() {
 
@@ -67,6 +89,14 @@ public class ReportDetails {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Report_Type getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(Report_Type reportType) {
+        this.reportType = reportType;
     }
 
     @Override
