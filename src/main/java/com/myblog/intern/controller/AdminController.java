@@ -7,6 +7,7 @@ import com.myblog.intern.repository.UserRepository;
 import com.myblog.intern.request.AdminProfileRequest;
 import com.myblog.intern.request.AdminSignUpRequest;
 import com.myblog.intern.service.EditProfileService;
+import com.myblog.intern.service.UserService;
 import com.myblog.intern.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,11 +31,13 @@ public class AdminController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserEditProfileRepository userEditProfileRepository;
+    @Autowired
+    UserService userService;
 
 
     private Validation validation=new Validation();
 
-    public boolean  userNameExist(String username){
+    /* public boolean  userNameExist(String username){
         Optional<User> user= userRepository.findByUserName(username);
         if(!user.isPresent()) return false;
         return true;
@@ -43,7 +46,7 @@ public class AdminController {
         Optional<User> user= userRepository.findByEmail(email);
         if(!user.isPresent()) return false;
         return true;
-    }
+    } */
 
     @GetMapping(value = "/getById")
     public ResponseEntity<AdminProfileRequest> getUsersById(@RequestParam int id)  throws RuntimeException {
@@ -160,8 +163,8 @@ public class AdminController {
             if(adminSignUpRequest.getPassword().length()<8)  return new ResponseEntity<String> ("Password should contain at least 8 characters!", HttpStatus.NOT_FOUND);
             if(!(validation.isValidEmailPattern(adminSignUpRequest.getEmail())))  return new ResponseEntity<String> ("Invalid email!", HttpStatus.NOT_FOUND);
            // if(!(validation.isValidUserNamePattern(adminSignUpRequest.getUserName()))) return new ResponseEntity<String> ("Invalid username!!", HttpStatus.NOT_FOUND);
-            if(userNameExist(adminSignUpRequest.getUserName())) return new ResponseEntity<String> ("username is taken!", HttpStatus.NOT_FOUND);
-            if(emailExist(adminSignUpRequest.getEmail())) return new ResponseEntity<String> ("Email already exists!", HttpStatus.NOT_FOUND);
+            if(userService.userNameExist(adminSignUpRequest.getUserName())) return new ResponseEntity<String> ("username is taken!", HttpStatus.NOT_FOUND);
+            if(userService.emailExist(adminSignUpRequest.getEmail())) return new ResponseEntity<String> ("Email already exists!", HttpStatus.NOT_FOUND);
             User user=new User();
             user.setPassword(passwordEncoder.encode(adminSignUpRequest.getPassword()));
             user.setUserName(adminSignUpRequest.getUserName());

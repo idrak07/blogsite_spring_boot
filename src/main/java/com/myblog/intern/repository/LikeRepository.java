@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface LikeRepository extends JpaRepository<Like, Integer> {
 
     boolean existsLikeByUserIdAndAndPostId(Integer userId, Integer postId);
-    boolean deleteByUserIdAAndPostId(Integer userId, Integer postId);
+    boolean deleteByUserIdAndPostId(Integer userId, Integer postId);
 }

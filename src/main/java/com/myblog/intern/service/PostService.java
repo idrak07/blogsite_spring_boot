@@ -5,6 +5,7 @@ import com.myblog.intern.model.PostHistory;
 import com.myblog.intern.repository.PostHistoryRepository;
 import com.myblog.intern.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -157,6 +158,10 @@ public class PostService {
         Integer userIdPost=post.getUserId();
         if(userIdRequest==userIdPost) return true;
         return false;
+    }
+
+    public List<Post> getTrendingPosts(){
+        return postRepository.findAll(Sort.by("udatedAt").descending().and(Sort.by("likes")));
     }
 
 }

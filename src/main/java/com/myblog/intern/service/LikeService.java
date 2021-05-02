@@ -44,7 +44,7 @@ public class LikeService {
     }
     public void removeLike(Like like){
         try{
-            likeRepository.deleteByUserIdAAndPostId(like.getUserId(), like.getPostId());
+            likeRepository.deleteByUserIdAndPostId(like.getUserId(), like.getPostId());
             Post post=postRepository.getOne(like.getPostId());
             post.setLikes(post.getLikes()-1);
             postRepository.save(post);
