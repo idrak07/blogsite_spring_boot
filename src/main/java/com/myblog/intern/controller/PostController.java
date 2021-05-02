@@ -176,22 +176,22 @@ public class PostController {
     * Change value 13 for postId and 5 for topicId
     * */
     @RequestMapping(value = "/post/add/topic", method = RequestMethod.POST)
-    public boolean addSelectedTopicToExistingPost(@RequestBody SelectedTopic selectedTopic){
+    public boolean addSelectedTopicToExistingPost(@RequestBody SelectedTopic selectedTopic, HttpServletRequest request){
         boolean result=false;
-        try{
-            if (!selectedTopicService.selectedTopicExists(selectedTopic.getPostId(),selectedTopic.getTopicId())){
-                selectedTopicService.createNewSelectedTopic(selectedTopic);
-                result=true;
+        if(postService.hasPermission(request, selectedTopic.getPostId())){
+            try{
+                if (!selectedTopicService.selectedTopicExists(selectedTopic.getPostId(),selectedTopic.getTopicId())){
+                    selectedTopicService.createNewSelectedTopic(selectedTopic);
+                    result=true;
+                }
+                else {
+                    System.out.println("Already topic is selected");
+                }
             }
-            else {
-                System.out.println("Already topic is selected");
+            catch (Exception e){
+                System.out.println(e.getMessage());
             }
-
         }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
         return  result;
     }
 
@@ -261,8 +261,9 @@ public class PostController {
 
 
 
-    @RequestMapping(value = "/post/{postId}/like/add/{username}", method = RequestMethod.GET)
-    public boolean addNewLike(@PathVariable Integer postId,@PathVariable String username){
+    @RequestMapping(value = "/post/{postId}/like/add", method = RequestMethod.GET)
+    public boolean addNewLike(@PathVariable Integer postId, HttpServletRequest request){
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
         boolean flag=false;
         Integer userId;
         try {
@@ -273,6 +274,9 @@ public class PostController {
                         if (likeService.addLike(new Like(null,userId,postId))){
                             flag=true;
                         }
+                    }
+                    else{
+                        likeService.removeLike(new Like(null,userId,postId));
                     }
                 }
             }
