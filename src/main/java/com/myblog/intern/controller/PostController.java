@@ -287,10 +287,7 @@ public class PostController {
         return flag;
     }
 
-
-
-
-
-
-
+    public List<Post> trendingPosts(){
+        return postService.getTrendingPosts();
+    }
 }

@@ -22,5 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     boolean existsPostByIdAndActive(Integer postId, Integer active);
 
+    List<Post> findByUpdatedAtAfterOrderByLikes(Timestamp time);
+
     //List<Post> findAllByOrderByDateDescAndByLikesDesc();
 }

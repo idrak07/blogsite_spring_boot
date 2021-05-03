@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -161,7 +162,8 @@ public class PostService {
     }
 
     public List<Post> getTrendingPosts(){
-        return postRepository.findAll(Sort.by("udatedAt").descending().and(Sort.by("likes")));
+        //return postRepository.findAll(Sort.by("updatedAt").descending().and(Sort.by("likes")));
+        return postRepository.findByUpdatedAtAfterOrderByLikes(Timestamp.valueOf(LocalDateTime.now().minusDays(3)));
     }
 
 }
