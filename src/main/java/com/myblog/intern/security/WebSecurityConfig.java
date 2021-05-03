@@ -30,13 +30,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers("/admin-panel").hasRole("admin")
-                .antMatchers("/authenticate","/signup","/reset-password","/security-question", "/security-answer",
-                        "/get-username", "/reset-password/**","/topic/**","/changePassword/**/","/profile/**/","/report/**/",
-                        "/reportType/**/","/admin/**/","/adminActivities/**/", "/data/**").permitAll()
+                .authorizeRequests()
+
+                .antMatchers("/authenticate","/signup","/reset-password","/security-question",
+                        "/security-answer", "/reset-password/**","/topic/**","/report/**/",
+                        "/reportType/**/","/admin/**/", "/data/**").permitAll()
+
+                .antMatchers("/post", "/changePassword/**", "/report/addReport",
+                        "/profile/**").hasAnyRole("user", "admin")
+
+                .antMatchers("/get-username", "/adminActivities/**", "/admin-panel", "/admin",
+                        "/report", "/reportType", "/topic/**").hasRole("admin")
+
+                .antMatchers("/topic/desc/**", "/topic/addTopic", "/topic/getById", "/topic/getAllTopic").hasRole("user")
+
                 .anyRequest().authenticated().and().formLogin().and()
                 .exceptionHandling().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
     @Bean

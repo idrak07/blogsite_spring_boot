@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/post")
 public class PostController {
 
     @Autowired
@@ -43,7 +44,7 @@ public class PostController {
     * {"description": "Technology"}, {"description": "Agriculture"}
     * {"userId":1,"title":"My third post","shortDescription": "This is short desc","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A","active":1,"images":",nsdvf","topicList": [1,4]}
      * */
-    @RequestMapping(value = "/post/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     public String createNewPost(@RequestBody PostWithTopic postWithTopic, HttpServletRequest request){
         String result=null;
         String username= jwtService.extractUserName(jwtService.parseToken(request));
@@ -84,7 +85,7 @@ public class PostController {
      * {"description": "Technology"}, {"description": "Agriculture"}
      * {"title":"My third post","shortDescription": "This is short desc","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A"}
      * */
-    @RequestMapping(value = "/post/{postId}/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/{postId}/update", method = RequestMethod.POST)
     public boolean updatePost(@PathVariable Integer postId, @RequestBody Post post, HttpServletRequest request){
         boolean flag=false;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
@@ -107,7 +108,7 @@ public class PostController {
      * Url: localhost:8080/post/{postId}/delete
      * Data : Not needed, only postId
      *  */
-        @RequestMapping(value = "/post/{postId}/delete", method = RequestMethod.GET)
+        @RequestMapping(value = "/{postId}/delete", method = RequestMethod.GET)
     public boolean deletePost(@PathVariable Integer postId, HttpServletRequest request){
         boolean flag=false;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
@@ -133,7 +134,7 @@ public class PostController {
     * Url: localhost:8080/post/12
     * Data :Change value 12 for different result as it is post id
     * */
-    @RequestMapping(value = "/post/{postId}")
+    @RequestMapping(value = "/{postId}")
     public CompletePost getPost(@PathVariable Integer postId){
 
         CompletePost completePost=null;
@@ -155,7 +156,7 @@ public class PostController {
     * Url: localhost:8080/post/13/remove/topic/5
     * Change value 13 for postId and 5 for topicId
     * */
-    @RequestMapping(value = "/post/{postId}/remove/topic/{topicId}")
+    @RequestMapping(value = "/{postId}/remove/topic/{topicId}")
     public boolean removeSelectedTopic(@PathVariable Integer postId,@PathVariable Integer topicId, HttpServletRequest request){
         boolean result=false;
         if(postService.hasPermission(request, postId)){
@@ -175,7 +176,7 @@ public class PostController {
     * Url: localhost:8080/post/13/remove/topic/5
     * Change value 13 for postId and 5 for topicId
     * */
-    @RequestMapping(value = "/post/add/topic", method = RequestMethod.POST)
+    @RequestMapping(value = "/add/topic", method = RequestMethod.POST)
     public boolean addSelectedTopicToExistingPost(@RequestBody SelectedTopic selectedTopic, HttpServletRequest request){
         boolean result=false;
         if(postService.hasPermission(request, selectedTopic.getPostId())){
@@ -202,7 +203,7 @@ public class PostController {
      * Method:get
      * Data: no data required
      * */
-    @RequestMapping(value = "/posts/categories/recent")
+    @RequestMapping(value = "/categories/recent")
     public List<PostWithTopic> getRecentPostList(){
         List<Post> posts;
         List<PostWithTopic> postWithTopics=new ArrayList<>();
@@ -222,7 +223,7 @@ public class PostController {
      * Method:get
      * Data: no data required
      * */
-    @RequestMapping(value = "/posts/categories/most-viewed", method = RequestMethod.GET)
+    @RequestMapping(value = "/categories/most-viewed", method = RequestMethod.GET)
     public List<PostWithTopic> getMostViewedPostList(){
         /*List<Post> posts;*/
         List<PostWithTopic> postWithTopics=new ArrayList<>();
@@ -236,7 +237,7 @@ public class PostController {
         return  postWithTopics;
     }
 
-    @RequestMapping(value = "/post/{postId}/comment/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/{postId}/comment/add", method = RequestMethod.POST)
     public boolean addNewComment(@PathVariable Integer postId, @RequestBody Comment comment){
         boolean flag=false;
         try {
@@ -261,7 +262,7 @@ public class PostController {
 
 
 
-    @RequestMapping(value = "/post/{postId}/like/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/{postId}/like/add", method = RequestMethod.GET)
     public boolean addNewLike(@PathVariable Integer postId, HttpServletRequest request){
         String username= jwtService.extractUserName(jwtService.parseToken(request));
         boolean flag=false;
