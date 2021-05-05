@@ -7,6 +7,7 @@ import com.myblog.intern.repository.UserRepository;
 import com.myblog.intern.request.AdminProfileRequest;
 import com.myblog.intern.request.AdminSignUpRequest;
 import com.myblog.intern.service.EditProfileService;
+import com.myblog.intern.service.JwtService;
 import com.myblog.intern.service.UserService;
 import com.myblog.intern.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,15 +31,17 @@ public class AdminController {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private UserEditProfileRepository userEditProfileRepository;
     @Autowired
-    private UserEditProfileRepository userEditProfileRepository;
+    JwtService jwtService;
     @Autowired
     UserService userService;
 
 
     private Validation validation=new Validation();
 
-    /* public boolean  userNameExist(String username){
+    public boolean  userNameExist(String username){
         Optional<User> user= userRepository.findByUserName(username);
         if(!user.isPresent()) return false;
         return true;
@@ -46,9 +50,9 @@ public class AdminController {
         Optional<User> user= userRepository.findByEmail(email);
         if(!user.isPresent()) return false;
         return true;
-    } */
+    }
 
-    @GetMapping(value = "/getById")
+    @GetMapping(value = "/getByIds")
     public ResponseEntity<AdminProfileRequest> getUsersById(@RequestParam int id)  throws RuntimeException {
         UserDetails userDetails=null;
         User user=null;
@@ -70,6 +74,40 @@ public class AdminController {
             adminProfileRequest.setZipCode(userDetails.getZipCode());
             adminProfileRequest.setLastName(userDetails.getLastName());
             user=userRepository.findById(id).get();
+            adminProfileRequest.setUserName(user.getUserName());
+            adminProfileRequest.setRole(user.getRole());
+
+        }catch (Exception ex){
+            ex.getMessage();
+            return new ResponseEntity<AdminProfileRequest> (adminProfileRequest, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<AdminProfileRequest> (adminProfileRequest, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getById")
+    public ResponseEntity<AdminProfileRequest> getUsersById(HttpServletRequest request)  throws RuntimeException {
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
+        Integer userIdRequest= userService.getUserIdByUserName(username);
+        UserDetails userDetails=null;
+        User user=null;
+        AdminProfileRequest adminProfileRequest=new AdminProfileRequest();
+        try {
+            userDetails=editProfileService.getUserDetailsByUserID(userIdRequest);
+            adminProfileRequest.setId(userDetails.getId());
+            adminProfileRequest.setUserId(userDetails.getUserId());
+            adminProfileRequest.setProfilePic(userDetails.getProfilePic());
+            adminProfileRequest.setContact(userDetails.getContact());
+            adminProfileRequest.setState(userDetails.getState());
+            adminProfileRequest.setStreet(userDetails.getStreet());
+            adminProfileRequest.setCountry(userDetails.getCountry());
+            adminProfileRequest.setEmail(userDetails.getEmail());
+            adminProfileRequest.setBirthMonth(userDetails.getBirthMonth());
+            adminProfileRequest.setBirthDate(userDetails.getBirthDate());
+            adminProfileRequest.setBirthYear(userDetails.getBirthYear());
+            adminProfileRequest.setFirstName(userDetails.getFirstName());
+            adminProfileRequest.setZipCode(userDetails.getZipCode());
+            adminProfileRequest.setLastName(userDetails.getLastName());
+            user=userRepository.findById(userIdRequest).get();
             adminProfileRequest.setUserName(user.getUserName());
             adminProfileRequest.setRole(user.getRole());
 
@@ -119,7 +157,10 @@ public class AdminController {
     }
 
     @PostMapping("/UpdateAdminProfile")
-    public ResponseEntity<String> adminUpdate(@RequestBody AdminProfileRequest adminProfileRequest)  throws RuntimeException {
+    public ResponseEntity<String> adminUpdate(@RequestBody AdminProfileRequest adminProfileRequest,HttpServletRequest request)  throws RuntimeException {
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
+        Integer userIdRequest= userService.getUserIdByUserName(username);
+        if(userIdRequest!=adminProfileRequest.getUserId())  return new ResponseEntity<String> ("Not a valid user", HttpStatus.INTERNAL_SERVER_ERROR);
         try {
             User user=new User();
             user=userRepository.findById(adminProfileRequest.getUserId()).get();
@@ -146,7 +187,7 @@ public class AdminController {
                 u.setZipCode(adminProfileRequest.getZipCode());
                 u.setEmail(adminProfileRequest.getEmail());
                 u.setRole("ROLE_admin");
-                userEditProfileRepository.save(u);
+                editProfileService.saveUpdateProfile(u);
             }
         }catch (Exception ex){
             ex.getMessage();
@@ -163,8 +204,8 @@ public class AdminController {
             if(adminSignUpRequest.getPassword().length()<8)  return new ResponseEntity<String> ("Password should contain at least 8 characters!", HttpStatus.NOT_FOUND);
             if(!(validation.isValidEmailPattern(adminSignUpRequest.getEmail())))  return new ResponseEntity<String> ("Invalid email!", HttpStatus.NOT_FOUND);
            // if(!(validation.isValidUserNamePattern(adminSignUpRequest.getUserName()))) return new ResponseEntity<String> ("Invalid username!!", HttpStatus.NOT_FOUND);
-            if(userService.userNameExist(adminSignUpRequest.getUserName())) return new ResponseEntity<String> ("username is taken!", HttpStatus.NOT_FOUND);
-            if(userService.emailExist(adminSignUpRequest.getEmail())) return new ResponseEntity<String> ("Email already exists!", HttpStatus.NOT_FOUND);
+            if(userNameExist(adminSignUpRequest.getUserName())) return new ResponseEntity<String> ("username is taken!", HttpStatus.NOT_FOUND);
+            if(emailExist(adminSignUpRequest.getEmail())) return new ResponseEntity<String> ("Email already exists!", HttpStatus.NOT_FOUND);
             User user=new User();
             user.setPassword(passwordEncoder.encode(adminSignUpRequest.getPassword()));
             user.setUserName(adminSignUpRequest.getUserName());
@@ -188,17 +229,17 @@ public class AdminController {
         return new ResponseEntity<String> ("Successfully added Admin ", HttpStatus.OK);
     }
 
-    @PostMapping("/deleteAdmin")
-    public ResponseEntity<String>deleteById(@RequestBody AdminProfileRequest adminProfileRequest)  throws RuntimeException {
-        try {
-            adminProfileRequest.setUserId(userRepository.findByUserName(adminProfileRequest.getUserName()).get().getUserId());
-            userEditProfileRepository.deleteById(adminProfileRequest.getUserId());
-            userRepository.deleteById(userRepository.findByUserName(adminProfileRequest.getUserName()).get().getUserId());
-
-        }catch (Exception ex){
-            ex.getMessage();
-            return new ResponseEntity<String> (ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<String> ("Successfully deleted admin", HttpStatus.OK);
-    }
+//    @PostMapping("/deleteAdmin")
+//    public ResponseEntity<String>deleteById(@RequestBody AdminProfileRequest adminProfileRequest)  throws RuntimeException {
+//        try {
+//            adminProfileRequest.setUserId(userRepository.findByUserName(adminProfileRequest.getUserName()).get().getUserId());
+//            userEditProfileRepository.deleteById(adminProfileRequest.getUserId());
+//            userRepository.deleteById(userRepository.findByUserName(adminProfileRequest.getUserName()).get().getUserId());
+//
+//        }catch (Exception ex){
+//            ex.getMessage();
+//            return new ResponseEntity<String> (ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        return new ResponseEntity<String> ("Successfully deleted admin", HttpStatus.OK);
+//    }
 }
