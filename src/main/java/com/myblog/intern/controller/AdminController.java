@@ -157,7 +157,10 @@ public class AdminController {
     }
 
     @PostMapping("/UpdateAdminProfile")
-    public ResponseEntity<String> adminUpdate(@RequestBody AdminProfileRequest adminProfileRequest)  throws RuntimeException {
+    public ResponseEntity<String> adminUpdate(@RequestBody AdminProfileRequest adminProfileRequest,HttpServletRequest request)  throws RuntimeException {
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
+        Integer userIdRequest= userService.getUserIdByUserName(username);
+        if(userIdRequest!=adminProfileRequest.getUserId())  return new ResponseEntity<String> ("Not a valid user", HttpStatus.INTERNAL_SERVER_ERROR);
         try {
             User user=new User();
             user=userRepository.findById(adminProfileRequest.getUserId()).get();
