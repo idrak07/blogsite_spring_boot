@@ -39,7 +39,7 @@ public class ChangePasswordController {
 
         try {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            if(encoder.matches(request.getOldPassword(),user.getPassword())){
+            if(encoder.matches(request.getOldPassword(),user.getPassword())==true){
                 try {
                     String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
                     user.setPassword(encodedNewPassword);
@@ -48,6 +48,8 @@ public class ChangePasswordController {
                     ex.getMessage();
                     return new ResponseEntity<String>("Password could not change", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
+            }else{
+                return new ResponseEntity<String>("Wrong Old Password", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
         } catch (Exception ex) {

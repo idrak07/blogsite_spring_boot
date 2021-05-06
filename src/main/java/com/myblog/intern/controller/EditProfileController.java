@@ -2,8 +2,10 @@ package com.myblog.intern.controller;
 
 import com.myblog.intern.model.User;
 import com.myblog.intern.model.UserDetails;
+import com.myblog.intern.request.EditProfileRequest;
 import com.myblog.intern.service.EditProfileService;
 import com.myblog.intern.service.JwtService;
+import com.myblog.intern.service.UserDetailsServiceImpl;
 import com.myblog.intern.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ public class EditProfileController {
     private UserService userService;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
 
     public EditProfileController(EditProfileService editProfileService) {
         this.editProfileService = editProfileService;
@@ -70,19 +74,20 @@ public class EditProfileController {
     }
 
     @PostMapping("/Update")
-    public ResponseEntity<String>addOrUpdate(@RequestBody UserDetails userDetails,HttpServletRequest request)  throws RuntimeException {
+    public ResponseEntity<String>addOrUpdate(@RequestBody EditProfileRequest editProfileRequest, HttpServletRequest request)  throws RuntimeException {
         String username= jwtService.extractUserName(jwtService.parseToken(request));
         Integer userIdRequest= userService.getUserIdByUserName(username);
        // userDetails.setUserId(userIdRequest);
-        if(userIdRequest!=userDetails.getUserId())  return new ResponseEntity<String> ("Not a valid user", HttpStatus.INTERNAL_SERVER_ERROR);
+        UserDetails userDetails= editProfileService.getUserDetailsByUserID(userIdRequest);
+        UserDetails newUserDetails= editProfileService.mapUserDetails(editProfileRequest, userDetails);
         try {
-            if(editProfileService.saveUpdateProfile(userDetails)!=null){
-                Optional<User> user=userService.findById(userDetails.getUserId());
-                user.get().setRole(userDetails.getRole());
+            /*if(editProfileService.saveUpdateProfile(newUserDetails)!=null){
+                Optional<User> user=userService.findById(userIdRequest);
                 user.get().setEmail(userDetails.getEmail());
                 userService.save(user.get());
             }else  return new ResponseEntity<String> ("Error occur", HttpStatus.INTERNAL_SERVER_ERROR);
-
+             */
+            editProfileService.saveUpdateProfile(newUserDetails);
         }catch (Exception ex){
             ex.getMessage();
             return new ResponseEntity<String> (ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

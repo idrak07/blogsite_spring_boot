@@ -3,6 +3,7 @@ package com.myblog.intern.service;
 import com.myblog.intern.model.User;
 import com.myblog.intern.model.UserDetailsImpl;
 import com.myblog.intern.repository.UserRepository;
+import com.myblog.intern.request.EditProfileRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

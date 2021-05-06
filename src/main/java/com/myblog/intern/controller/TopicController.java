@@ -36,9 +36,9 @@ public class TopicController {
 
     @PostMapping("/addTopic")
     public ResponseEntity<String> addOrUpdateTopic(@RequestBody Topic topic)  throws RuntimeException {
+        if(topicService.topicExist(topic.getDescription())) return ResponseEntity.ok("Topic already exists!");
         try {
             topicService.saveUpdateTopic(topic);
-
         }catch (Exception ex){
             ex.getMessage();
             return new ResponseEntity<String> (ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

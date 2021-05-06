@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/get-username", "/adminActivities/**", "/admin-panel", "/admin",
                         "/report", "/reportType", "/topic/**").hasRole("admin")
 
-                .antMatchers("/topic/desc/**", "/topic/addTopic", "/topic/getById", "/topic/getAllTopic").hasRole("user")
+                .antMatchers("/topic/desc/**", "/topic/getById", "/topic/getAllTopic").hasRole("user")
 
                 .anyRequest().authenticated().and().formLogin().and()
                 .exceptionHandling().and().sessionManagement()
