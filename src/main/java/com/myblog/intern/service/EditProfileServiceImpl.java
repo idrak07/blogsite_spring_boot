@@ -4,6 +4,7 @@ import com.myblog.intern.model.User;
 import com.myblog.intern.model.UserDetails;
 import com.myblog.intern.repository.UserEditProfileRepository;
 import com.myblog.intern.repository.UserRepository;
+import com.myblog.intern.request.EditProfileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,5 +60,18 @@ public class EditProfileServiceImpl implements EditProfileService{
         return  userDetails;
     }
 
-
+    public com.myblog.intern.model.UserDetails mapUserDetails(EditProfileRequest editProfileRequest, com.myblog.intern.model.UserDetails userDetails){
+        userDetails.setFirstName(editProfileRequest.getFirstName());
+        userDetails.setLastName(editProfileRequest.getLastName());
+        userDetails.setBirthDate(editProfileRequest.getBirthDate());
+        userDetails.setBirthMonth(editProfileRequest.getBirthMonth());
+        userDetails.setBirthYear(editProfileRequest.getBirthYear());
+        userDetails.setContact(editProfileRequest.getContact());
+        userDetails.setCountry(editProfileRequest.getCountry());
+        userDetails.setState(editProfileRequest.getState());
+        userDetails.setStreet(editProfileRequest.getStreet());
+        userDetails.setProfilePic(editProfileRequest.getProfilePic());
+        userDetails.setZipCode(editProfileRequest.getZipCode());
+        return userDetails;
+    }
 }

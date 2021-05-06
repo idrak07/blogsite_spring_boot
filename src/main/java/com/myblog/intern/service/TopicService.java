@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TopicService {
@@ -67,5 +68,9 @@ public class TopicService {
         return true;
     }
 
-
+    public boolean topicExist(String description){
+        Optional<Topic> topic=topicRepository.findByDescription(description);
+        if(topic.isPresent()) return true;
+        return false;
+    }
 }
