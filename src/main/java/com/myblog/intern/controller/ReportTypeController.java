@@ -39,7 +39,7 @@ public class ReportTypeController {
             ex.getMessage();
             return new ResponseEntity<String> (ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<String> ("Successfully Recorded Report", HttpStatus.OK);
+        return new ResponseEntity<String> ("Record Deleted!", HttpStatus.OK);
     }
 
     @GetMapping(value = "/getAllReportType")

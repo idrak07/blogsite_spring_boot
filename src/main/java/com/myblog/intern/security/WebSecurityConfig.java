@@ -33,16 +33,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 
                 .antMatchers("/authenticate","/signup","/reset-password","/security-question",
-                        "/security-answer", "/reset-password/**","/topic/**","/report/**/",
-                        "/reportType/**/","/admin/**/", "/data/**").permitAll()
+                        "/security-answer", "/reset-password/**", "/data/**").permitAll()
 
                 .antMatchers("/post", "/changePassword/**", "/report/addReport",
-                        "/profile/**").hasAnyRole("user", "admin")
+                        "/profile/**", "/save/**").hasAnyRole("user", "admin")
 
                 .antMatchers("/get-username", "/adminActivities/**", "/admin-panel", "/admin",
-                        "/report", "/reportType", "/topic/**").hasRole("admin")
+                        "/report/**", "/reportType/**", "/topic/**", "/reportType").hasRole("admin")
 
-                .antMatchers("/topic/desc/**", "/topic/getById", "/topic/getAllTopic").hasRole("user")
+                .antMatchers("/topic/desc/**", "/topic/getById", "/topic/getAllTopic", "/report/addReport").hasRole("user")
 
                 .anyRequest().authenticated().and().formLogin().and()
                 .exceptionHandling().and().sessionManagement()

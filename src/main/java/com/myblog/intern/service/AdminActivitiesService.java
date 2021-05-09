@@ -28,12 +28,12 @@ public class AdminActivitiesService {
         Date date=new Date(millis);
         adminActivities.setTime(date);
         ReportDetails reportDetails=reportService.getReportById(adminActivities.getReportId());
-        if(reportDetails.getReportType()==Report_Type.PROFILE_REPORT){  //profile report
+        if(reportDetails.getTypeId()==0){  //profile report
             User user=userRepository.findById(reportDetails.getUserId()).get();
             user.setActive(false);
             userRepository.save(user);
             adminActivities.setDetails("User Profile Deactivated");
-        }else if(reportDetails.getReportType()==Report_Type.POST_REPORT){ //post report
+        }else if(reportDetails.getPostId()==1){ //post report
             Post post=postRepository.findById(reportDetails.getPostId()).get();
             post.setActive(0);
             postRepository.save(post);

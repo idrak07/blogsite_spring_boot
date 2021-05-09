@@ -12,6 +12,6 @@ public interface ReportRepository extends JpaRepository<ReportDetails, Integer> 
     public   List<ReportDetails> findByPostId(Integer id);
     public   List<ReportDetails> findByProfileId(Integer id);
     @Transactional
-    public void deleteReportDetailsById(int id);
+    public long deleteReportDetailsById(int id);
 
 }

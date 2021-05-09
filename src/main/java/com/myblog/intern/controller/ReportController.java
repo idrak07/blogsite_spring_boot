@@ -94,11 +94,13 @@ public class ReportController {
     public ResponseEntity<String> addOrUpdate(@RequestBody ReportDetails reportDetails, HttpServletRequest request)  throws RuntimeException {
         String username= jwtService.extractUserName(jwtService.parseToken(request));
         Integer userIdRequest= userService.getUserIdByUserName(username);
+        //System.out.println(reportDetails.getTypeId());
+        //if(!(reportService.reportValid(reportDetails.getTypeId()))) return ResponseEntity.ok("Invalid report type!");
         if(reportDetails.getUserId()==null){
             reportDetails.setUserId(userIdRequest);
         }
         else{
-            if(userIdRequest!=reportDetails.getUserId())  return new ResponseEntity<String> ("Not a valid user", HttpStatus.INTERNAL_SERVER_ERROR);
+            if(userIdRequest!=reportDetails.getUserId())  return new ResponseEntity<String> ("Already reported once!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         try {
@@ -115,12 +117,12 @@ public class ReportController {
 
     @PostMapping("/deleteByReportDetailsId")  //to be tested
     public ResponseEntity<String> deleteById(@RequestBody ReportDetails reportDetails, HttpServletRequest request)  throws RuntimeException {
-        String username= jwtService.extractUserName(jwtService.parseToken(request));
-        Integer userIdRequest= userService.getUserIdByUserName(username);
-        if(userIdRequest!=reportDetails.getUserId())  return new ResponseEntity<String> ("Not a valid user", HttpStatus.INTERNAL_SERVER_ERROR);
         try {
-            reportService.deleteById(reportDetails.getId());
-
+            long numOfEntriesDeleted =reportService.deleteById(reportDetails.getId());
+            //System.out.println(numOfEntriesDeleted);
+            if(numOfEntriesDeleted != 1){
+                return ResponseEntity.ok("Invalid Report!");
+            }
         }catch (Exception ex){
             ex.getMessage();
             return new ResponseEntity<String> ("Not Found Report Details", HttpStatus.INTERNAL_SERVER_ERROR);

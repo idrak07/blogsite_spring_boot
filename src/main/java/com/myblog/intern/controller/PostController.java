@@ -86,14 +86,21 @@ public class PostController {
      * {"title":"My third post","shortDescription": "This is short desc","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A"}
      * */
     @RequestMapping(value = "/{postId}/update", method = RequestMethod.POST)
-    public boolean updatePost(@PathVariable Integer postId, @RequestBody Post post, HttpServletRequest request){
+    public boolean updatePost(@PathVariable Integer postId, @RequestBody PostWithTopic postWithTopic, HttpServletRequest request){
         boolean flag=false;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         Timestamp updateTime = new Timestamp(System.currentTimeMillis());
         try {
             if (postService.postExists(postId)){
-                if (postService.updatePost(request,postId,post.getTitle(),post.getShortDescription(),post.getDetails(),updateTime)){
+                if (postService.updatePost(request,postId,postWithTopic.getTitle(),postWithTopic.getShortDescription(),postWithTopic.getDetails(),updateTime)){
                     flag=true;
+                    if(postWithTopic.getTopicList().size()!=0){
+                        selectedTopicService.removeSelectedTopicByPostId(postId);
+                        for(int i=0; i<postWithTopic.getTopicList().size(); i++){
+                            SelectedTopic selectedTopic=new SelectedTopic( postWithTopic.getTopicList().get(i), postId);
+                            selectedTopicService.createNewSelectedTopic(selectedTopic);
+                        }
+                    }
                 }
             }
         }
@@ -141,6 +148,7 @@ public class PostController {
       try{
          if (postService.postExists(postId)){
              Post post= postService.getPostById(postId);
+             if(post.getActive()==0) return null;
              List<Integer> selectedTopic= selectedTopicService.getSelectedTopicByPostId(postId);
              List<Comment> commentList= commentService.getCommentByPostId(postId);
              completePost=new CompletePost(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getActive(),post.getUpdatedAt(),post.getView(),post.getLikes(),post.getComments(),selectedTopic,commentList);
@@ -238,8 +246,11 @@ public class PostController {
     }
 
     @RequestMapping(value = "/{postId}/comment/add", method = RequestMethod.POST)
-    public boolean addNewComment(@PathVariable Integer postId, @RequestBody Comment comment){
+    public boolean addNewComment(@PathVariable Integer postId, @RequestBody Comment comment, HttpServletRequest request){
         boolean flag=false;
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
+        Integer userId= userService.getUserIdByUserName(username);
+        comment.setUserId(userId);
         try {
             if (postService.postExists(postId)){
                 if (userService.userExists(comment.getUserId())){
