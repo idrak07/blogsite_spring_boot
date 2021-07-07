@@ -11,15 +11,15 @@ public class ReportType {
     @Column(name = "id")
     private Integer id;
 
-//    @Column(name = "type")
-//    private String type;
-    @Enumerated(EnumType.STRING)
-    private Report_Type type;
+    @Column(name = "type")
+    private String type;
+   /* @Enumerated(EnumType.STRING)
+    private Report_Type type;*/
 
     public ReportType() {
     }
 
-    public ReportType(Integer id, Report_Type type) {
+    public ReportType(Integer id, String type) {
         this.id = id;
         this.type = type;
     }
@@ -32,11 +32,11 @@ public class ReportType {
         this.id = id;
     }
 
-    public Report_Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Report_Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 

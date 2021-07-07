@@ -41,6 +41,7 @@ public class UserController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    //@CrossOrigin(origins = "http://localhost:4200/", maxAge = 3600)
     @GetMapping("/hello")
     public void hello(HttpServletResponse response) throws IOException {
         response.sendRedirect("/users");
@@ -54,6 +55,8 @@ public class UserController {
     public String signup(@RequestBody SignupRequest signupRequest){
         return userService.addUser(signupRequest);
     }
+
+    //@CrossOrigin(origins = "http://localhost:4200/", maxAge = 3600)
     @GetMapping("/users")
     public List<User> users(){
         return userService.fetchAllUsers();

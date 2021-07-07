@@ -3,6 +3,7 @@ package com.myblog.intern.request;
 public class passwordRequest {
     private String oldPassword;
     private String newPassword;
+    private String retypeNewPassword;
 
     public String getOldPassword() {
         return oldPassword;
@@ -18,6 +19,14 @@ public class passwordRequest {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
+    }
+
+    public String getRetypeNewPassword() {
+        return retypeNewPassword;
+    }
+
+    public void setRetypeNewPassword(String retypeNewPassword) {
+        this.retypeNewPassword = retypeNewPassword;
     }
 
     public passwordRequest() {

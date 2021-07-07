@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/post")
 public class SavedPostController {
 
     @Autowired
@@ -30,7 +31,7 @@ public class SavedPostController {
     @Autowired
     JwtService jwtService;
 
-    @RequestMapping(value = "/post/saved", method = RequestMethod.GET)
+    @RequestMapping(value = "/saved", method = RequestMethod.GET)
     public List<PostWithTopic> getSavedPostByUser(HttpServletRequest request){
         String username= jwtService.extractUserName(jwtService.parseToken(request));
         Integer userId;
@@ -50,7 +51,7 @@ public class SavedPostController {
         return postWithTopics;
     }
 
-    @RequestMapping(value = "/post/save/{postId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/save/{postId}", method = RequestMethod.GET)
     public boolean setSavedPostByUser(HttpServletRequest request, @PathVariable Integer postId){
         String username= jwtService.extractUserName(jwtService.parseToken(request));
         boolean flag=false;
@@ -72,7 +73,7 @@ public class SavedPostController {
         }
         return flag;
     }
-    @RequestMapping(value = "/post/remove-save/{postId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/remove-save/{postId}", method = RequestMethod.GET)
     public boolean removeSavedPostByUser(HttpServletRequest request,@PathVariable Integer postId){
         String username= jwtService.extractUserName(jwtService.parseToken(request));
         boolean flag=false;

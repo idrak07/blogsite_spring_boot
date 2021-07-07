@@ -4,9 +4,11 @@ import com.myblog.intern.model.User;
 import com.myblog.intern.model.UserDetails;
 import com.myblog.intern.repository.UserEditProfileRepository;
 import com.myblog.intern.repository.UserRepository;
+import com.myblog.intern.request.EditProfileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +17,7 @@ import java.util.Optional;
 public class EditProfileServiceImpl implements EditProfileService{
     @Autowired
     private UserEditProfileRepository userEditProfileRepository;
-    @Autowired
-    private UserRepository userRepository;
+
 
 
     @Override
@@ -25,19 +26,19 @@ public class EditProfileServiceImpl implements EditProfileService{
 
     }
 
-  @Override
-    public UserDetails saveUpdateProfile(UserDetails userDetails) {
+    @Override
+    public UserDetails getUsersByUserId(int userId) {
+        return userEditProfileRepository.findByUserId(userId);
+    }
 
-      Optional<User> user=userRepository.findById(userDetails.getUserId());
-      user.get().setRole(userDetails.getRole());
-      user.get().setEmail(userDetails.getEmail());
-      userRepository.save(user.get());
+    @Override
+    public UserDetails saveUpdateProfile(UserDetails userDetails) {
       UserDetails u=  userEditProfileRepository.save(userDetails);
-      return userDetails;
+      return u;
       }
 
     @Override
-    public boolean DeleteProfile(UserDetails userDetails) {
+    public boolean DeleteProfile(UserDetails userDetails, HttpServletRequest request) {
         userEditProfileRepository.deleteById(userDetails.getUserId());
         return true;
     }
@@ -53,5 +54,24 @@ public class EditProfileServiceImpl implements EditProfileService{
         return  u;
     }
 
+    @Override
+    public List<UserDetails> getAll() {
+        List<UserDetails>userDetails=userEditProfileRepository.findAll();
+        return  userDetails;
+    }
 
+    public com.myblog.intern.model.UserDetails mapUserDetails(EditProfileRequest editProfileRequest, com.myblog.intern.model.UserDetails userDetails){
+        userDetails.setFirstName(editProfileRequest.getFirstName());
+        userDetails.setLastName(editProfileRequest.getLastName());
+        userDetails.setBirthDate(editProfileRequest.getBirthDate());
+        userDetails.setBirthMonth(editProfileRequest.getBirthMonth());
+        userDetails.setBirthYear(editProfileRequest.getBirthYear());
+        userDetails.setContact(editProfileRequest.getContact());
+        userDetails.setCountry(editProfileRequest.getCountry());
+        userDetails.setState(editProfileRequest.getState());
+        userDetails.setStreet(editProfileRequest.getStreet());
+        userDetails.setProfilePic(editProfileRequest.getProfilePic());
+        userDetails.setZipCode(editProfileRequest.getZipCode());
+        return userDetails;
+    }
 }

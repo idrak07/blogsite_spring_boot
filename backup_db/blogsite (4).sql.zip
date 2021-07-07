@@ -1,0 +1,579 @@
+-- phpMyAdmin SQL Dump
+-- version 5.0.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: May 06, 2021 at 11:46 AM
+-- Server version: 10.4.11-MariaDB
+-- PHP Version: 7.4.3
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `blogsite`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_activities`
+--
+
+CREATE TABLE `admin_activities` (
+  `id` int(50) NOT NULL,
+  `admin_id` int(255) NOT NULL,
+  `report_id` int(50) NOT NULL,
+  `time` datetime DEFAULT NULL,
+  `details` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comment`
+--
+
+CREATE TABLE `comment` (
+  `id` int(50) NOT NULL,
+  `user_id` int(50) NOT NULL,
+  `post_id` int(50) NOT NULL,
+  `date` datetime DEFAULT NULL,
+  `details` text DEFAULT NULL,
+  `active` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forgetpassurl`
+--
+
+CREATE TABLE `forgetpassurl` (
+  `id` int(10) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `token` varchar(256) NOT NULL,
+  `generatedtime` timestamp NOT NULL DEFAULT current_timestamp(),
+  `expiredtime` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hibernate_sequence`
+--
+
+CREATE TABLE `hibernate_sequence` (
+  `next_val` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `hibernate_sequence`
+--
+
+INSERT INTO `hibernate_sequence` (`next_val`) VALUES
+(1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `login_activities`
+--
+
+CREATE TABLE `login_activities` (
+  `login_id` int(50) NOT NULL,
+  `user_id` int(50) NOT NULL,
+  `ip_address` varchar(50) DEFAULT NULL,
+  `time` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notification`
+--
+
+CREATE TABLE `notification` (
+  `id` int(50) NOT NULL,
+  `user_id` int(50) NOT NULL,
+  `details` text DEFAULT NULL,
+  `reads` tinyint(1) DEFAULT NULL,
+  `time` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post`
+--
+
+CREATE TABLE `post` (
+  `id` int(255) NOT NULL,
+  `user_id` int(255) NOT NULL,
+  `post_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `title` varchar(100) NOT NULL,
+  `short_description` varchar(50) DEFAULT NULL,
+  `details` longtext DEFAULT NULL,
+  `active` int(2) NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `view` int(11) NOT NULL,
+  `likes` int(11) NOT NULL,
+  `comments` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `post`
+--
+
+INSERT INTO `post` (`id`, `user_id`, `post_time`, `title`, `short_description`, `details`, `active`, `updated_at`, `view`, `likes`, `comments`) VALUES
+(1001, 23, '2021-05-06 03:32:38', 'CSE', 'Computer Science and Engineering', 'asklfdjgjklfklghkf', 1, '2021-05-06 03:32:38', 0, 0, 0),
+(1002, 23, '2021-05-06 03:35:11', 'CSE', 'Computer Science and Engineering', 'asklfdjgjklfklghkf', 1, '2021-05-06 03:35:11', 0, 0, 0),
+(1003, 23, '2021-05-06 03:36:57', 'CS', 'Computer Science', 'askghfglfdjgjklfklghkf', 1, '2021-05-06 03:36:57', 0, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post_history`
+--
+
+CREATE TABLE `post_history` (
+  `id` int(50) NOT NULL,
+  `post_id` int(50) NOT NULL,
+  `details` text DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
+  `short_description` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post_sequence`
+--
+
+CREATE TABLE `post_sequence` (
+  `next_val` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `post_sequence`
+--
+
+INSERT INTO `post_sequence` (`next_val`) VALUES
+(1004);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post_view`
+--
+
+CREATE TABLE `post_view` (
+  `id` int(50) NOT NULL,
+  `uesr_id` int(50) NOT NULL,
+  `post_id` int(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `report_details`
+--
+
+CREATE TABLE `report_details` (
+  `id` int(50) NOT NULL,
+  `type_id` int(50) NOT NULL,
+  `user_id` int(50) NOT NULL,
+  `post_id` int(50) NOT NULL,
+  `profile_id` int(50) NOT NULL,
+  `status` int(11) DEFAULT NULL,
+  `report_type` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `report_type`
+--
+
+CREATE TABLE `report_type` (
+  `id` int(50) NOT NULL,
+  `type` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `saved_post`
+--
+
+CREATE TABLE `saved_post` (
+  `id` int(50) NOT NULL,
+  `user_id` int(50) NOT NULL,
+  `post_id` int(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `selected_topic`
+--
+
+CREATE TABLE `selected_topic` (
+  `id` int(50) NOT NULL,
+  `topic_id` int(50) NOT NULL,
+  `post_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `selected_topic`
+--
+
+INSERT INTO `selected_topic` (`id`, `topic_id`, `post_id`) VALUES
+(1, 1, 1002),
+(2, 5, 1002),
+(3, 1, 1003),
+(4, 3, 1003);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `topic`
+--
+
+CREATE TABLE `topic` (
+  `id` int(50) NOT NULL,
+  `description` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `topic`
+--
+
+INSERT INTO `topic` (`id`, `description`) VALUES
+(1, 'Technology\r\n'),
+(2, 'Agriculture'),
+(3, 'Food'),
+(4, 'Health'),
+(5, 'Computer Science');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `user_id` int(255) NOT NULL,
+  `user_name` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  `role` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`user_id`, `user_name`, `password`, `email`, `active`, `role`) VALUES
+(10, 'meadfahim', '$2a$10$qC.fPoJ7nkqDKxheWSqmaucBF2zCeK.bnVt6xwYtpGC2lAYqHJaK.', 'fahim-mead@blog.com', 1, 'ROLE_user'),
+(17, 'asfaqrahat', '$2a$12$mf1XeoLj02MOc/Rb5/ir..eqyS4VHHZ6VvRTsJOHzpalA0dQtB2hC', 'asfaq-rahat@blog.com', 1, 'ROLE_user'),
+(18, 'm.i.idrak', '$2a$12$dOY7lLzg4uS1aROeTt5tOux62ssPlEEE2rBmqNRMRoTasQ/0r2Gfq', 'muntakimm@gmail.com', 1, 'ROLE_user'),
+(23, 'md.toyeb', '$2a$12$CM5HVuzzVA4UNNvvIQt6muz3fn6s7cacJGa.pvi1kPibb45Aq./8K', 'md.toyeb@g.bracu.ac.bd', 1, 'ROLE_admin'),
+(25, 'md.shanto', '$2a$12$/zXT.95PKtKQk3.yhizHs.58P6wMbfMasJ7/V1Qs2zXN//4svnYI2', 'mdshantorbm@gmail.com', 1, 'ROLE_user');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_details`
+--
+
+CREATE TABLE `user_details` (
+  `id` int(50) NOT NULL,
+  `user_id` int(50) NOT NULL,
+  `role` varchar(50) DEFAULT NULL,
+  `first_name` varchar(100) DEFAULT NULL,
+  `last_name` varchar(100) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `birth_date` int(2) DEFAULT NULL,
+  `birth_month` int(2) DEFAULT NULL,
+  `birth_year` int(6) DEFAULT NULL,
+  `street` varchar(50) DEFAULT NULL,
+  `state` varchar(50) DEFAULT NULL,
+  `country` varchar(50) DEFAULT NULL,
+  `zip_code` int(50) DEFAULT NULL,
+  `contact` varchar(50) DEFAULT NULL,
+  `profile_pic` varchar(50) DEFAULT NULL,
+  `security_question` text DEFAULT NULL,
+  `security_answer` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user_details`
+--
+
+INSERT INTO `user_details` (`id`, `user_id`, `role`, `first_name`, `last_name`, `email`, `birth_date`, `birth_month`, `birth_year`, `street`, `state`, `country`, `zip_code`, `contact`, `profile_pic`, `security_question`, `security_answer`) VALUES
+(7, 10, 'ROLE_user', 'Mead', 'Fahim', 'fahim-mead@blog.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(14, 17, 'ROLE_user', 'Asfaq', 'Rahat', 'asfaq-rahat@blog.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(15, 18, 'ROLE_user', 'Muntakim', 'Islam', 'muntakimm@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(20, 23, 'ROLE_user', 'Md.', 'Toyeb', 'md.toyeb@g.bracu.ac.bd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(22, 25, 'ROLE_user', 'Md.', 'Shanto', 'mdshantorbm@gmail.com', 1, 9, 1997, 'F-180/5', 'Gazipur', 'Bangladesh', 1700, '+8801853637400', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_like`
+--
+
+CREATE TABLE `user_like` (
+  `id` int(50) NOT NULL,
+  `user_id` int(50) NOT NULL,
+  `post_id` int(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `admin_activities`
+--
+ALTER TABLE `admin_activities`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `admin_id` (`admin_id`),
+  ADD KEY `admin_activities_ibfk_2` (`report_id`);
+
+--
+-- Indexes for table `comment`
+--
+ALTER TABLE `comment`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `post_id` (`post_id`);
+
+--
+-- Indexes for table `forgetpassurl`
+--
+ALTER TABLE `forgetpassurl`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `login_activities`
+--
+ALTER TABLE `login_activities`
+  ADD PRIMARY KEY (`login_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `notification`
+--
+ALTER TABLE `notification`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `post_history`
+--
+ALTER TABLE `post_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `post_id` (`post_id`);
+
+--
+-- Indexes for table `post_sequence`
+--
+ALTER TABLE `post_sequence`
+  ADD PRIMARY KEY (`next_val`);
+
+--
+-- Indexes for table `post_view`
+--
+ALTER TABLE `post_view`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `uesr_id` (`uesr_id`),
+  ADD KEY `post_id` (`post_id`);
+
+--
+-- Indexes for table `report_details`
+--
+ALTER TABLE `report_details`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `type_id` (`type_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `post_id` (`post_id`),
+  ADD KEY `profile_id` (`profile_id`);
+
+--
+-- Indexes for table `report_type`
+--
+ALTER TABLE `report_type`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `saved_post`
+--
+ALTER TABLE `saved_post`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `post_id` (`post_id`);
+
+--
+-- Indexes for table `selected_topic`
+--
+ALTER TABLE `selected_topic`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `post_id` (`post_id`),
+  ADD KEY `topic_id` (`topic_id`),
+  ADD KEY `selected_topic_ibfk_1` (`topic_id`),
+  ADD KEY `selected_topic_ibfk_2` (`post_id`);
+
+--
+-- Indexes for table `topic`
+--
+ALTER TABLE `topic`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indexes for table `user_details`
+--
+ALTER TABLE `user_details`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `user_like`
+--
+ALTER TABLE `user_like`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `post_id` (`post_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `admin_activities`
+--
+ALTER TABLE `admin_activities`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `comment`
+--
+ALTER TABLE `comment`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `forgetpassurl`
+--
+ALTER TABLE `forgetpassurl`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT for table `login_activities`
+--
+ALTER TABLE `login_activities`
+  MODIFY `login_id` int(50) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `notification`
+--
+ALTER TABLE `notification`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `post_history`
+--
+ALTER TABLE `post_history`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `post_view`
+--
+ALTER TABLE `post_view`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `report_details`
+--
+ALTER TABLE `report_details`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `report_type`
+--
+ALTER TABLE `report_type`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `saved_post`
+--
+ALTER TABLE `saved_post`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `selected_topic`
+--
+ALTER TABLE `selected_topic`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `topic`
+--
+ALTER TABLE `topic`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `user_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT for table `user_details`
+--
+ALTER TABLE `user_details`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
+-- AUTO_INCREMENT for table `user_like`
+--
+ALTER TABLE `user_like`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `admin_activities`
+--
+ALTER TABLE `admin_activities`
+  ADD CONSTRAINT `admin_activities_ibfk_1` FOREIGN KEY (`report_id`) REFERENCES `report_details` (`id`),
+  ADD CONSTRAINT `admin_activities_ibfk_2` FOREIGN KEY (`admin_id`) REFERENCES `user` (`user_id`);
+
+--
+-- Constraints for table `user_details`
+--
+ALTER TABLE `user_details`
+  ADD CONSTRAINT `user_details_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

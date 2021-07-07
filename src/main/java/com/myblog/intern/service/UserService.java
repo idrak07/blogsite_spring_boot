@@ -71,7 +71,7 @@ public class UserService {
         if(signupRequest.getFirstName().length()==0 || signupRequest.getLastName().length()==0) return "Name can not be empty!";
         if(signupRequest.getPassword().length()<8) return "Password should contain at least 8 characters!";
         if(!isValidEmailPattern(signupRequest.getEmail())) return "Invalid email!";
-        if(!isValidUserNamePattern(signupRequest.getUserName())) return "Invalid username!!";
+//        if(!isValidUserNamePattern(signupRequest.getUserName())) return "Invalid username!!";
         if(userNameExist(signupRequest.getUserName())) return "username is taken!";
         if(emailExist(signupRequest.getEmail())) return "Email already exists!";
         User user=new User(signupRequest.getUserName(), encodePassword(signupRequest.getPassword()), signupRequest.getEmail(), true, "ROLE_user");
@@ -125,5 +125,16 @@ public class UserService {
             System.out.println("Service: UserService, Method: getUserIdByUserName, Error:"+e.getMessage());
         }
         return flag;
+    }
+
+    public Optional<User> findById(int id){
+        Optional<User> user=userRepository.findById(id);
+        return user;
+    }
+    public void save(User user){
+        userRepository.save(user);
+    }
+    public User getUserByName(String name){
+        return userRepository.findByUserName(name).get();
     }
 }

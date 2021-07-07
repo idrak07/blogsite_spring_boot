@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/post")
 public class PostController {
 
     @Autowired
@@ -43,7 +44,7 @@ public class PostController {
     * {"description": "Technology"}, {"description": "Agriculture"}
     * {"userId":1,"title":"My third post","shortDescription": "This is short desc","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A","active":1,"images":",nsdvf","topicList": [1,4]}
      * */
-    @RequestMapping(value = "/post/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     public String createNewPost(@RequestBody PostWithTopic postWithTopic, HttpServletRequest request){
         String result=null;
         String username= jwtService.extractUserName(jwtService.parseToken(request));
@@ -84,15 +85,22 @@ public class PostController {
      * {"description": "Technology"}, {"description": "Agriculture"}
      * {"title":"My third post","shortDescription": "This is short desc","details":"+wmnembjn+j+keb+e+%0D%0Alnrel%0D%0A%0D%0Aljetnlnerl+noiner.%0D%0A"}
      * */
-    @RequestMapping(value = "/post/{postId}/update", method = RequestMethod.POST)
-    public boolean updatePost(@PathVariable Integer postId, @RequestBody Post post, HttpServletRequest request){
+    @RequestMapping(value = "/{postId}/update", method = RequestMethod.POST)
+    public boolean updatePost(@PathVariable Integer postId, @RequestBody PostWithTopic postWithTopic, HttpServletRequest request){
         boolean flag=false;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         Timestamp updateTime = new Timestamp(System.currentTimeMillis());
         try {
             if (postService.postExists(postId)){
-                if (postService.updatePost(request,postId,post.getTitle(),post.getShortDescription(),post.getDetails(),updateTime)){
+                if (postService.updatePost(request,postId,postWithTopic.getTitle(),postWithTopic.getShortDescription(),postWithTopic.getDetails(),updateTime)){
                     flag=true;
+                    if(postWithTopic.getTopicList().size()!=0){
+                        selectedTopicService.removeSelectedTopicByPostId(postId);
+                        for(int i=0; i<postWithTopic.getTopicList().size(); i++){
+                            SelectedTopic selectedTopic=new SelectedTopic( postWithTopic.getTopicList().get(i), postId);
+                            selectedTopicService.createNewSelectedTopic(selectedTopic);
+                        }
+                    }
                 }
             }
         }
@@ -107,7 +115,7 @@ public class PostController {
      * Url: localhost:8080/post/{postId}/delete
      * Data : Not needed, only postId
      *  */
-        @RequestMapping(value = "/post/{postId}/delete", method = RequestMethod.GET)
+        @RequestMapping(value = "/{postId}/delete", method = RequestMethod.GET)
     public boolean deletePost(@PathVariable Integer postId, HttpServletRequest request){
         boolean flag=false;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
@@ -133,13 +141,14 @@ public class PostController {
     * Url: localhost:8080/post/12
     * Data :Change value 12 for different result as it is post id
     * */
-    @RequestMapping(value = "/post/{postId}")
+    @RequestMapping(value = "/{postId}")
     public CompletePost getPost(@PathVariable Integer postId){
 
         CompletePost completePost=null;
       try{
          if (postService.postExists(postId)){
              Post post= postService.getPostById(postId);
+             if(post.getActive()==0) return null;
              List<Integer> selectedTopic= selectedTopicService.getSelectedTopicByPostId(postId);
              List<Comment> commentList= commentService.getCommentByPostId(postId);
              completePost=new CompletePost(post.getId(),post.getUserId(),post.getDate(),post.getTitle(),post.getShortDescription(),post.getDetails(),post.getActive(),post.getUpdatedAt(),post.getView(),post.getLikes(),post.getComments(),selectedTopic,commentList);
@@ -155,18 +164,19 @@ public class PostController {
     * Url: localhost:8080/post/13/remove/topic/5
     * Change value 13 for postId and 5 for topicId
     * */
-    @RequestMapping(value = "/post/{postId}/remove/topic/{topicId}")
-    public boolean removeSelectedTopic(@PathVariable Integer postId,@PathVariable Integer topicId){
+    @RequestMapping(value = "/{postId}/remove/topic/{topicId}")
+    public boolean removeSelectedTopic(@PathVariable Integer postId,@PathVariable Integer topicId, HttpServletRequest request){
         boolean result=false;
-        try{
-            if (selectedTopicService.delSelectedTopic(postId,topicId)){
-                result=true;
+        if(postService.hasPermission(request, postId)){
+            try{
+                if (selectedTopicService.delSelectedTopic(postId,topicId)){
+                    result=true;
+                }
+            }
+            catch (Exception e){
+                System.out.println(e.getMessage());
             }
         }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
         return  result;
     }
 
@@ -174,23 +184,23 @@ public class PostController {
     * Url: localhost:8080/post/13/remove/topic/5
     * Change value 13 for postId and 5 for topicId
     * */
-    @RequestMapping(value = "/post/add/topic", method = RequestMethod.POST)
-    public boolean addSelectedTopicToExistingPost(@RequestBody SelectedTopic selectedTopic){
+    @RequestMapping(value = "/add/topic", method = RequestMethod.POST)
+    public boolean addSelectedTopicToExistingPost(@RequestBody SelectedTopic selectedTopic, HttpServletRequest request){
         boolean result=false;
-        try{
-            if (!selectedTopicService.selectedTopicExists(selectedTopic.getPostId(),selectedTopic.getTopicId())){
-                selectedTopicService.createNewSelectedTopic(selectedTopic);
-                result=true;
+        if(postService.hasPermission(request, selectedTopic.getPostId())){
+            try{
+                if (!selectedTopicService.selectedTopicExists(selectedTopic.getPostId(),selectedTopic.getTopicId())){
+                    selectedTopicService.createNewSelectedTopic(selectedTopic);
+                    result=true;
+                }
+                else {
+                    System.out.println("Already topic is selected");
+                }
             }
-            else {
-                System.out.println("Already topic is selected");
+            catch (Exception e){
+                System.out.println(e.getMessage());
             }
-
         }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
         return  result;
     }
 
@@ -201,7 +211,7 @@ public class PostController {
      * Method:get
      * Data: no data required
      * */
-    @RequestMapping(value = "/posts/categories/recent")
+    @RequestMapping(value = "/categories/recent")
     public List<PostWithTopic> getRecentPostList(){
         List<Post> posts;
         List<PostWithTopic> postWithTopics=new ArrayList<>();
@@ -221,7 +231,7 @@ public class PostController {
      * Method:get
      * Data: no data required
      * */
-    @RequestMapping(value = "/posts/categories/most-viewed", method = RequestMethod.GET)
+    @RequestMapping(value = "/categories/most-viewed", method = RequestMethod.GET)
     public List<PostWithTopic> getMostViewedPostList(){
         /*List<Post> posts;*/
         List<PostWithTopic> postWithTopics=new ArrayList<>();
@@ -235,9 +245,12 @@ public class PostController {
         return  postWithTopics;
     }
 
-    @RequestMapping(value = "/post/{postId}/comment/add", method = RequestMethod.POST)
-    public boolean addNewComment(@PathVariable Integer postId, @RequestBody Comment comment){
+    @RequestMapping(value = "/{postId}/comment/add", method = RequestMethod.POST)
+    public boolean addNewComment(@PathVariable Integer postId, @RequestBody Comment comment, HttpServletRequest request){
         boolean flag=false;
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
+        Integer userId= userService.getUserIdByUserName(username);
+        comment.setUserId(userId);
         try {
             if (postService.postExists(postId)){
                 if (userService.userExists(comment.getUserId())){
@@ -260,8 +273,9 @@ public class PostController {
 
 
 
-    @RequestMapping(value = "/post/{postId}/like/add/{username}", method = RequestMethod.GET)
-    public boolean addNewLike(@PathVariable Integer postId,@PathVariable String username){
+    @RequestMapping(value = "/{postId}/like/add", method = RequestMethod.GET)
+    public boolean addNewLike(@PathVariable Integer postId, HttpServletRequest request){
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
         boolean flag=false;
         Integer userId;
         try {
@@ -273,6 +287,9 @@ public class PostController {
                             flag=true;
                         }
                     }
+                    else{
+                        likeService.removeLike(new Like(null,userId,postId));
+                    }
                 }
             }
         }
@@ -282,10 +299,7 @@ public class PostController {
         return flag;
     }
 
-
-
-
-
-
-
+    public List<Post> trendingPosts(){
+        return postService.getTrendingPosts();
+    }
 }

@@ -5,11 +5,13 @@ import com.myblog.intern.model.PostHistory;
 import com.myblog.intern.repository.PostHistoryRepository;
 import com.myblog.intern.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -150,5 +152,18 @@ public class PostService {
         return flag;
     }
 
+    public boolean hasPermission(HttpServletRequest request, Integer postId){
+        String username= jwtService.extractUserName(jwtService.parseToken(request));
+        Integer userIdRequest= userService.getUserIdByUserName(username);
+        Post post= postRepository.getOne(postId);
+        Integer userIdPost=post.getUserId();
+        if(userIdRequest==userIdPost) return true;
+        return false;
+    }
+
+    public List<Post> getTrendingPosts(){
+        //return postRepository.findAll(Sort.by("updatedAt").descending().and(Sort.by("likes")));
+        return postRepository.findByUpdatedAtAfterOrderByLikes(Timestamp.valueOf(LocalDateTime.now().minusDays(3)));
+    }
 
 }

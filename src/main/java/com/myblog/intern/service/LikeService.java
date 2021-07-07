@@ -42,4 +42,15 @@ public class LikeService {
         }
         return flag;
     }
+    public void removeLike(Like like){
+        try{
+            likeRepository.deleteByUserIdAndPostId(like.getUserId(), like.getPostId());
+            Post post=postRepository.getOne(like.getPostId());
+            post.setLikes(post.getLikes()-1);
+            postRepository.save(post);
+        }
+        catch (Exception e){
+            System.out.println("Service: LikeService, Method: removeLike, Error: "+e.getMessage());
+        }
+    }
 }

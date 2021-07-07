@@ -51,5 +51,8 @@ public class SelectedTopicService {
         }
         return flag;
     }
+    public void removeSelectedTopicByPostId(Integer postId){
+        selectedTopicRepository.deleteAllByPostId(postId);
+    }
 
 }
